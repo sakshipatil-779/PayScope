@@ -18,6 +18,7 @@ from app.models.usage_event import UsageEvent
 from app.models.usage_coverage import UsageCoverage
 from app.models.cancellation_event import CancellationEvent
 from app.models.savings_scenario import SavingsScenario
+from app.models.cancellation_case import CancellationCase
 
 __all__ = [
     "Base",
@@ -39,4 +40,5 @@ __all__ = [
     "UsageCoverage",
     "CancellationEvent",
     "SavingsScenario",
+    "CancellationCase",
 ]

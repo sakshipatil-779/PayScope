@@ -11,6 +11,7 @@ from app.api.v1.routes.commitments import router as commitments_router
 from app.api.v1.routes.insights import router as insights_router
 from app.api.v1.routes.financial_impact import router as financial_impact_router
 from app.api.v1.routes.savings import router as savings_router
+from app.api.v1.routes.cancellations import router as cancellations_router
 
 api_v1_router = APIRouter()
 api_v1_router.include_router(health_router)
@@ -24,3 +25,4 @@ api_v1_router.include_router(commitments_router)
 api_v1_router.include_router(insights_router)
 api_v1_router.include_router(financial_impact_router)
 api_v1_router.include_router(savings_router)
+api_v1_router.include_router(cancellations_router)

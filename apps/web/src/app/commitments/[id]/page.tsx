@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
+import PayScopeLogo from "@/components/brand/PayScopeLogo";
 
 interface TransactionEvidence {
   id: string;
@@ -261,26 +262,27 @@ export default function CommitmentDetailPage({
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
       {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+      <header className="border-b border-[#164B68] bg-[#031B38]/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-lg shadow-sm group-hover:border-emerald-500 transition-colors">
-                M
-              </div>
-              <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-emerald-400">Lens</span>
-              </span>
+            <Link href="/" className="hover:opacity-90 transition-opacity">
+              <PayScopeLogo variant="navbar" />
             </Link>
-            <span className="text-slate-600">/</span>
-            <Link href="/commitments" className="text-sm font-medium text-slate-400 hover:text-slate-200">
+            <span className="text-[#164B68]">/</span>
+            <Link href="/commitments" className="text-sm font-medium text-[#A9BBCD] hover:text-white transition-colors">
               Commitments
             </Link>
-            <span className="text-slate-600">/</span>
+            <span className="text-[#164B68]">/</span>
             <span className="text-sm font-medium text-slate-300 truncate max-w-xs">{commitment.display_name}</span>
           </div>
 
           <div className="flex items-center gap-3">
+            <Link
+              href={`/cancellations?commitment_id=${commitment.id}`}
+              className="text-xs px-3 py-1.5 rounded-lg border border-[#F08A00]/40 bg-[#F08A00]/10 text-[#FFA52B] hover:bg-[#F08A00]/20 transition-colors font-medium flex items-center gap-1.5"
+            >
+              <span>View cancellation guidance</span>
+            </Link>
             <Link
               href="/insights"
               className="text-xs px-3 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition-colors font-medium flex items-center gap-1.5"
@@ -403,6 +405,12 @@ export default function CommitmentDetailPage({
                 Mark Not Recurring
               </button>
             )}
+            <Link
+              href={`/cancellations?commitment_id=${commitment.id}`}
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#F08A00]/20 hover:bg-[#F08A00]/30 text-[#FFA52B] border border-[#F08A00]/40 transition-colors cursor-pointer flex items-center gap-1.5"
+            >
+              <span>View cancellation guidance →</span>
+            </Link>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="px-3 py-2 rounded-xl text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors border border-slate-800 cursor-pointer"
