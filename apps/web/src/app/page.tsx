@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import PayScopeLogo from "@/components/brand/PayScopeLogo";
 
 export const dynamic = "force-dynamic";
 
@@ -113,22 +114,18 @@ export default async function Home() {
       <header className="relative z-50 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-md anim-stage-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo & Brand Identity */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400/20 to-cyan-500/20 border border-cyan-400/40 flex items-center justify-center font-bold text-cyan-300 text-lg shadow-[0_0_15px_rgba(6,182,212,0.25)] transition-all group-hover:border-cyan-300">
-              M
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-cyan-400">Lens</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-800/40 text-cyan-300 font-mono">
-                  Phase 7
-                </span>
-              </span>
-            </div>
+          <Link href="/" className="hover:opacity-90 transition-opacity">
+            <PayScopeLogo variant="navbar" />
           </Link>
 
           {/* Primary Platform Navigation */}
-          <nav className="hidden md:flex items-center gap-1.5 text-xs font-medium">
+          <nav className="hidden lg:flex items-center gap-1.5 text-xs font-medium">
+            <Link
+              href="/dashboard"
+              className="px-3 py-1.5 rounded-lg border border-[#F08A00]/40 bg-[#F08A00]/15 text-[#FFA52B] hover:bg-[#F08A00]/25 transition-all font-semibold shadow-[0_0_12px_rgba(240,138,0,0.15)]"
+            >
+              Dashboard
+            </Link>
             <Link
               href="/financial-impact"
               className="px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all font-semibold shadow-[0_0_12px_rgba(6,182,212,0.15)]"
@@ -139,7 +136,7 @@ export default async function Home() {
               href="/savings"
               className="px-3 py-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 transition-all font-semibold"
             >
-              Savings & Projections
+              Savings
             </Link>
             <Link
               href="/commitments"
@@ -154,22 +151,22 @@ export default async function Home() {
               Insights
             </Link>
             <Link
+              href="/cancellations"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
+            >
+              Cancellations
+            </Link>
+            <Link
+              href="/relationships"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
+            >
+              Relationships
+            </Link>
+            <Link
               href="/upload"
               className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
             >
-              Upload Centre
-            </Link>
-            <Link
-              href="/merchants"
-              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
-            >
-              Merchants
-            </Link>
-            <Link
-              href="/merchant-review"
-              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
-            >
-              Review Queue
+              Upload
             </Link>
           </nav>
 
@@ -250,16 +247,22 @@ export default async function Home() {
           {/* Primary & Secondary Call-to-Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto anim-stage-3-delayed">
             <Link
-              href="/financial-impact"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold text-sm tracking-wide transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_45px_rgba(6,182,212,0.6)] hover:scale-[1.02] active:scale-[0.98] text-center"
+              href="/dashboard"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[#F08A00] to-[#FFA52B] hover:brightness-110 text-[#011633] font-bold text-sm tracking-wide transition-all shadow-[0_0_30px_rgba(240,138,0,0.4)] hover:shadow-[0_0_45px_rgba(240,138,0,0.6)] hover:scale-[1.02] active:scale-[0.98] text-center"
             >
-              Explore Your Financial Picture
+              Open PayScope Dashboard →
             </Link>
             <Link
-              href="/commitments"
+              href="/financial-impact"
+              className="w-full sm:w-auto px-7 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold text-sm tracking-wide transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:scale-[1.02] active:scale-[0.98] text-center"
+            >
+              Financial Projections
+            </Link>
+            <Link
+              href="/cancellations"
               className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 hover:border-cyan-500/50 text-slate-200 hover:text-white font-semibold text-sm transition-all backdrop-blur-md text-center"
             >
-              See How It Works
+              Cancellation Centre
             </Link>
           </div>
 
@@ -292,7 +295,7 @@ export default async function Home() {
       {/* ==================================================================== */}
       <footer className="relative z-10 border-t border-slate-900 bg-slate-950/80 backdrop-blur-sm py-4 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>MandateLens v0.7.0 &bull; Synthetic Financial Intelligence Platform</span>
+          <span>PayScope &bull; Intelligent Recurring Payment Platform</span>
           <div className="flex items-center gap-4 text-[11px]">
             <Link href="/financial-impact" className="hover:text-cyan-400 transition-colors">
               Annual Outflows

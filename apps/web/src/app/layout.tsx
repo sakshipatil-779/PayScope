@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MandateLens — Recurring Payment Intelligence",
+  title: "PayScope — Intelligent Recurring Payment Platform",
   description:
-    "Find the money leaving quietly. Discover recurring payments, understand hidden charges, detect silent price increases and take control of your financial commitments.",
+    "Discover recurring payments, understand hidden charges, detect silent price increases and take control of your financial commitments.",
 };
 
 export default function RootLayout({
