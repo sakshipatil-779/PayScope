@@ -1,0 +1,47 @@
+MANDATELENS — ANTIGRAVITY START PROMPT (PHASE 0 ONLY)
+
+You are working in the MandateLens project workspace. Follow AGENTS.md as the highest-priority repository workflow instruction, then read MASTER_BUILD_BRIEF.md and every numbered project document from 00_PROJECT_CHARTER.md through 12_BUILD_PLAN.md.
+
+IMPORTANT WORKFLOW RULE:
+This project is being built one phase at a time. You are authorised to complete PHASE 0 ONLY in this session. Do not implement the application, create scaffolding, install packages, modify source files, or start Phase 1. After Phase 0, return the required Phase Handoff Summary and STOP. The user will share your summary with ChatGPT and will provide a separate prompt for the next phase.
+
+PHASE 0 — WORKSPACE AUDIT AND IMPLEMENTATION ALIGNMENT
+
+Your tasks:
+1. Read and understand all project documents.
+2. Inspect the current workspace and identify existing files, folders, package managers, runtime versions, environment files, and any existing implementation.
+3. Determine whether the workspace is empty, partially scaffolded, or contains an existing application.
+4. Preserve all useful existing work. Do not overwrite, delete, or rename unrelated files.
+5. Check whether the required stack direction is feasible in the current workspace:
+   - Next.js + TypeScript frontend
+   - Tailwind CSS + shadcn/ui
+   - FastAPI primary backend
+   - PostgreSQL + SQLAlchemy 2.0 + Alembic
+   - Python analytics using Pandas, RapidFuzz, regex, and supporting statistics libraries when required
+   - Celery + Redis later for background processing
+   - Neo4j optional and non-blocking
+   - Gemini optional and explanation-only
+   - Pytest + Playwright
+   - Docker + Docker Compose
+6. Recommend a repository layout for the above stack. Prefer a clear structure such as apps/web and apps/api, but adapt to existing workspace conventions if there is already a suitable structure.
+7. Identify prerequisites, likely dependency/version compatibility checks, environment requirements, architectural conflicts, security concerns, and any decisions that need user approval.
+8. Recommend the smallest safe Phase 1 implementation plan. Phase 1 must establish only a runnable web/API skeleton and required local foundation; do not include recurring detection, merchant matching, cancellation logic, Neo4j, Gemini, OCR, or other later-phase features.
+9. Do not browse the web or install packages unless the workspace inspection makes a specific verification necessary and the user has authorised it. Do not invent current package versions.
+10. Do not change any files in Phase 0. If you believe a file change is essential, explain why and wait for approval.
+
+OUTPUT REQUIREMENTS:
+Return a concise but complete Phase 0 report using the exact headings below:
+
+1. Phase completed — state “Phase 0 — Workspace audit and implementation alignment”.
+2. What changed — explicitly state that no files were changed, or list any change only if the user separately authorised it.
+3. Implementation details — describe current workspace state and proposed architecture/folder structure.
+4. Commands executed — list exact inspection commands; if none, say so.
+5. Tests and validation — state what was checked and what was not applicable.
+6. Acceptance criteria status — mark each Phase 0 exit criterion pass / partial / blocked.
+7. Known issues and risks — list concrete blockers, missing prerequisites, and decisions.
+8. Database or data changes — state “None”.
+9. How to run or verify — explain whether anything can currently be run; do not invent commands.
+10. Recommended next phase — state “Phase 1 — Repository foundation and runnable skeleton”.
+11. Handoff notes for ChatGPT — include the exact proposed folder structure, workspace findings, existing code to preserve, runtime/package-manager details, and any questions that genuinely require a decision.
+
+STOP after this report. Do not begin Phase 1 or any other implementation work.
