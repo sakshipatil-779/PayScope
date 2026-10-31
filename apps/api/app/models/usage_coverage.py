@@ -78,3 +78,4 @@ class UsageCoverage(Base):
     # Relationships
     user: Mapped["DemoUser"] = relationship("DemoUser", back_populates="usage_coverage")
     commitment: Mapped["Commitment"] = relationship("Commitment", back_populates="usage_coverage")
+

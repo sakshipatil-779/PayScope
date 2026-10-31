@@ -103,3 +103,4 @@ def detect_trial_conversion(
         converted_transaction=first_paid,
         subsequent_transactions=paid_debits[1:],
     )
+

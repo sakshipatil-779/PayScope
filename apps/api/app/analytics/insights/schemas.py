@@ -122,3 +122,4 @@ class InsightResolveRequest(BaseModel):
     """Request payload to mark an insight resolved."""
     resolution_action: Optional[str] = None
     notes: Optional[str] = None
+

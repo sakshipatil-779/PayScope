@@ -100,3 +100,4 @@ def test_no_trial_notifications_returns_none():
 
     res = detect_trial_conversion(commitment, txns, notifications=[])
     assert res is None
+

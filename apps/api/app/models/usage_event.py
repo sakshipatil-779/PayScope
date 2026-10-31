@@ -74,3 +74,4 @@ class UsageEvent(Base):
     # Relationships
     user: Mapped["DemoUser"] = relationship("DemoUser", back_populates="usage_events")
     commitment: Mapped[Optional["Commitment"]] = relationship("Commitment", back_populates="usage_events")
+

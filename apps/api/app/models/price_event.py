@@ -88,3 +88,4 @@ class PriceEvent(Base):
 
     # Relationships
     commitment: Mapped["Commitment"] = relationship("Commitment", back_populates="price_events")
+

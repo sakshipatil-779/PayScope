@@ -88,3 +88,4 @@ class CancellationEvent(Base):
     user: Mapped["DemoUser"] = relationship("DemoUser", back_populates="cancellation_events")
     commitment: Mapped["Commitment"] = relationship("Commitment", back_populates="cancellation_events")
     notification: Mapped[Optional["PaymentNotification"]] = relationship("PaymentNotification")
+

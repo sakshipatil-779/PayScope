@@ -81,3 +81,4 @@ class InsightEvidence(Base):
     usage_event: Mapped[Optional["UsageEvent"]] = relationship("UsageEvent")
     usage_coverage: Mapped[Optional["UsageCoverage"]] = relationship("UsageCoverage")
     cancellation_event: Mapped[Optional["CancellationEvent"]] = relationship("CancellationEvent")
+

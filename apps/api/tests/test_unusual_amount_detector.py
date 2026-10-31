@@ -65,3 +65,4 @@ def test_deduplication_suppresses_alerts_when_price_change_detected():
 
     results = detect_unusual_amount(commitment, txns, price_change_detected=True)
     assert len(results) == 0, "Sustained price increase should suppress duplicate unusual amount alerts."
+

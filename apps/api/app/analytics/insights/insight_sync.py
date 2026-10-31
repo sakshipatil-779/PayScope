@@ -286,3 +286,4 @@ def sync_unusual_amount_insight(
         db.add(create_transaction_evidence(insight.id, t, "baseline_evidence"))
 
     return insight
+

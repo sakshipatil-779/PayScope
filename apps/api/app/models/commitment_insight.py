@@ -124,3 +124,4 @@ class CommitmentInsight(Base):
         back_populates="insight",
         cascade="all, delete-orphan",
     )
+
