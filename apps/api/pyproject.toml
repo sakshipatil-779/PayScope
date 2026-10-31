@@ -9,6 +9,9 @@ dependencies = [
     "uvicorn>=0.32.0",
     "pydantic>=2.9.0",
     "pydantic-settings>=2.6.0",
+    "sqlalchemy>=2.0.36",
+    "alembic>=1.14.0",
+    "psycopg[binary]>=3.2.0",
 ]
 
 [project.optional-dependencies]
@@ -27,4 +30,8 @@ packages = ["app"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:.*Using `httpx` with `starlette.testclient` is deprecated.*",
+]
 

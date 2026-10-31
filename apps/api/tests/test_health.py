@@ -15,3 +15,4 @@ def test_health_check_status_and_payload():
         "service": "mandatelens-api",
         "version": "0.1.0",
     }
+

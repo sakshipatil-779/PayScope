@@ -20,3 +20,4 @@ async def get_health() -> HealthResponse:
         service="mandatelens-api",
         version=settings.VERSION,
     )
+
