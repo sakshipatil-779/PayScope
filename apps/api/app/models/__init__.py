@@ -11,6 +11,12 @@ from app.models.manual_review_item import ManualReviewItem
 from app.models.audit_event import AuditEvent
 from app.models.commitment import Commitment
 from app.models.commitment_transaction import CommitmentTransaction
+from app.models.price_event import PriceEvent
+from app.models.commitment_insight import CommitmentInsight
+from app.models.insight_evidence import InsightEvidence
+from app.models.usage_event import UsageEvent
+from app.models.usage_coverage import UsageCoverage
+from app.models.cancellation_event import CancellationEvent
 
 __all__ = [
     "Base",
@@ -25,4 +31,10 @@ __all__ = [
     "AuditEvent",
     "Commitment",
     "CommitmentTransaction",
+    "PriceEvent",
+    "CommitmentInsight",
+    "InsightEvidence",
+    "UsageEvent",
+    "UsageCoverage",
+    "CancellationEvent",
 ]

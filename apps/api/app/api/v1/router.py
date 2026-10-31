@@ -8,6 +8,7 @@ from app.api.v1.routes.merchants import router as merchants_router
 from app.api.v1.routes.merchant_reviews import router as merchant_reviews_router
 from app.api.v1.routes.merchant_aliases import router as merchant_aliases_router
 from app.api.v1.routes.commitments import router as commitments_router
+from app.api.v1.routes.insights import router as insights_router
 
 api_v1_router = APIRouter()
 api_v1_router.include_router(health_router)
@@ -18,3 +19,4 @@ api_v1_router.include_router(merchants_router)
 api_v1_router.include_router(merchant_reviews_router)
 api_v1_router.include_router(merchant_aliases_router)
 api_v1_router.include_router(commitments_router)
+api_v1_router.include_router(insights_router)

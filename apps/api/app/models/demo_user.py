@@ -71,3 +71,23 @@ class DemoUser(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    insights: Mapped[List["CommitmentInsight"]] = relationship(
+        "CommitmentInsight",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    usage_events: Mapped[List["UsageEvent"]] = relationship(
+        "UsageEvent",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    usage_coverage: Mapped[List["UsageCoverage"]] = relationship(
+        "UsageCoverage",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    cancellation_events: Mapped[List["CancellationEvent"]] = relationship(
+        "CancellationEvent",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )

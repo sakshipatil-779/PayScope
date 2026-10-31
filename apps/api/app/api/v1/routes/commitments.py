@@ -25,6 +25,8 @@ from app.models.commitment import Commitment
 from app.models.commitment_transaction import CommitmentTransaction
 from app.models.payment_notification import PaymentNotification
 from app.models.transaction import Transaction
+from app.models.commitment_insight import CommitmentInsight
+from app.analytics.insights.schemas import InsightResponse
 from app.repositories.user_repository import UserRepository
 
 router = APIRouter(prefix="/commitments", tags=["Commitments"])
@@ -379,6 +381,31 @@ def get_commitment_timeline(
         display_name=commitment.display_name,
         events=events,
     )
+
+
+@router.get("/{commitment_id}/insights", response_model=List[InsightResponse])
+def get_commitment_insights(
+    commitment_id: uuid.UUID,
+    db: Session = Depends(get_db),
+) -> List[InsightResponse]:
+    """Get all insights and detected anomalies for a commitment."""
+    from app.api.v1.routes.insights import _to_insight_response
+    user = UserRepository.get_or_create_demo_user(db)
+
+    stmt = (
+        select(CommitmentInsight)
+        .where(
+            CommitmentInsight.commitment_id == commitment_id,
+            CommitmentInsight.user_id == user.id,
+        )
+        .options(
+            joinedload(CommitmentInsight.commitment).joinedload(Commitment.merchant),
+            joinedload(CommitmentInsight.evidence_items),
+        )
+        .order_by(CommitmentInsight.detected_at.desc())
+    )
+    insights = db.execute(stmt).unique().scalars().all()
+    return [_to_insight_response(i) for i in insights]
 
 
 @router.post("/{commitment_id}/confirm", response_model=CommitmentResponse)

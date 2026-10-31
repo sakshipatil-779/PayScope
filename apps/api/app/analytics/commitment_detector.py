@@ -66,10 +66,14 @@ class CommitmentDetector:
 
         # Step 4: Analyze each stream
         for stream in streams:
-            dates = [
-                t.transaction_date.date() if isinstance(t.transaction_date, datetime) else t.transaction_date
-                for t in stream.transactions
-            ]
+            dates = []
+            for t in stream.transactions:
+                if isinstance(t.transaction_date, str):
+                    dates.append(datetime.fromisoformat(t.transaction_date).date())
+                elif isinstance(t.transaction_date, datetime):
+                    dates.append(t.transaction_date.date())
+                else:
+                    dates.append(t.transaction_date)
             amounts = [t.amount for t in stream.transactions]
 
             interval_info = analyze_intervals(dates)

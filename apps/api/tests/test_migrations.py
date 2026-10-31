@@ -5,6 +5,11 @@ from alembic.config import Config
 from sqlalchemy import text
 from app.core.config import settings
 
+CHECKED_TABLES = (
+    "'demo_users', 'transactions', 'accounts', 'commitments', 'commitment_transactions', "
+    "'price_events', 'commitment_insights', 'insight_evidence', 'usage_events', 'usage_coverage', 'cancellation_events'"
+)
+
 
 def get_test_alembic_config() -> Config:
     """Create an Alembic config targeted at the test database."""
@@ -25,7 +30,7 @@ def test_migration_downgrade_and_reupgrade(engine):
     with engine.connect() as conn:
         result = conn.execute(
             text(
-                "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('demo_users', 'transactions', 'accounts', 'commitments', 'commitment_transactions');"
+                f"SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ({CHECKED_TABLES});"
             )
         ).scalar()
         assert result == 0
@@ -37,7 +42,7 @@ def test_migration_downgrade_and_reupgrade(engine):
     with engine.connect() as conn:
         result = conn.execute(
             text(
-                "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('demo_users', 'transactions', 'accounts', 'commitments', 'commitment_transactions');"
+                f"SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ({CHECKED_TABLES});"
             )
         ).scalar()
-        assert result == 5
+        assert result == 11

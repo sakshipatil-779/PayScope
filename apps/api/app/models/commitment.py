@@ -156,3 +156,27 @@ class Commitment(Base):
         viewonly=True,
         order_by="Transaction.transaction_date.desc()",
     )
+    price_events: Mapped[List["PriceEvent"]] = relationship(
+        "PriceEvent",
+        back_populates="commitment",
+        cascade="all, delete-orphan",
+    )
+    insights: Mapped[List["CommitmentInsight"]] = relationship(
+        "CommitmentInsight",
+        back_populates="commitment",
+        cascade="all, delete-orphan",
+    )
+    usage_events: Mapped[List["UsageEvent"]] = relationship(
+        "UsageEvent",
+        back_populates="commitment",
+    )
+    usage_coverage: Mapped[List["UsageCoverage"]] = relationship(
+        "UsageCoverage",
+        back_populates="commitment",
+        cascade="all, delete-orphan",
+    )
+    cancellation_events: Mapped[List["CancellationEvent"]] = relationship(
+        "CancellationEvent",
+        back_populates="commitment",
+        cascade="all, delete-orphan",
+    )

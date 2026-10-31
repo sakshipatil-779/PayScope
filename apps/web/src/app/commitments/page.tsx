@@ -236,6 +236,12 @@ export default function CommitmentsPage() {
 
           <div className="flex items-center gap-3">
             <Link
+              href="/insights"
+              className="text-xs px-3 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition-colors font-medium"
+            >
+              Insights
+            </Link>
+            <Link
               href="/upload"
               className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
             >
