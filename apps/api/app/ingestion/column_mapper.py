@@ -108,3 +108,4 @@ class ColumnMapper:
             elif mapping[req] not in available_headers:
                 errors.append(f"Mapped header '{mapping[req]}' for '{req}' not found in file headers.")
         return errors
+

@@ -1,6 +1,8 @@
-"""Import coordination service handling preview and persistence."""
+"""Import coordination service handling preview and persistence with merchant resolution."""
 import hashlib
 import uuid
+from datetime import datetime, timezone
+from decimal import Decimal
 from typing import Any, Dict, List, Optional, Set
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,6 +12,9 @@ from app.ingestion.file_validator import FileValidator
 from app.ingestion.json_parser import JSONParser
 from app.ingestion.schema_normalizer import SchemaNormalizer
 from app.ingestion.xlsx_parser import XLSXParser
+from app.matching.config import DEFAULT_MATCHING_CONFIG
+from app.matching.resolver import MerchantResolver
+from app.matching.review_service import ReviewService
 from app.models.import_record import ImportRecord
 from app.models.payment_notification import PaymentNotification
 from app.models.transaction import Transaction
@@ -107,10 +112,14 @@ class ImportService:
             duplicate_count = sum(1 for r in norm_result.valid_records if r.get("external_synthetic_id") in existing_ids)
             net_valid_count = len(norm_result.valid_records) - duplicate_count
 
+            # Pre-load resolver for diagnostic preview
+            resolver = MerchantResolver.from_db(db)
+
             # Build preview rows (first 15)
             preview_rows = []
             for r in norm_result.valid_records[:15]:
                 is_dup = r.get("external_synthetic_id") in existing_ids
+                res = resolver.resolve(r["raw_descriptor"])
                 preview_rows.append({
                     "date": r["transaction_date"].strftime("%Y-%m-%d"),
                     "descriptor": r["raw_descriptor"],
@@ -121,6 +130,9 @@ class ImportService:
                     "reference": r["payment_reference"],
                     "external_id": r["external_synthetic_id"],
                     "is_duplicate": is_dup,
+                    "suggested_merchant": res.merchant_name,
+                    "match_status": res.status,
+                    "match_confidence": res.confidence_band,
                 })
 
             return {
@@ -206,7 +218,7 @@ class ImportService:
         column_overrides: Optional[Dict[str, str]] = None,
         account_id: Optional[uuid.UUID] = None,
     ) -> Dict[str, Any]:
-        """Validate, persist records, and return execution summary."""
+        """Validate, persist records, automatically resolve merchants, and return summary."""
         # 1. Validation
         val_res = FileValidator.validate_upload(filename, content, synthetic_confirmed)
         if not val_res.is_valid:
@@ -261,12 +273,31 @@ class ImportService:
                     )
                     existing_ids = set(db.scalars(stmt).all())
 
+                # Load resolver for automatic merchant matching
+                resolver = MerchantResolver.from_db(db)
+                now = datetime.now(timezone.utc)
+                review_items_to_queue = []
+
                 # Persist non-duplicate records
                 new_records = []
                 for r in norm_result.valid_records:
                     if r.get("external_synthetic_id") in existing_ids:
                         duplicate_count += 1
                         continue
+
+                    # Automatic merchant resolution
+                    resolution = resolver.resolve(r["raw_descriptor"])
+
+                    merchant_id = resolution.merchant_id
+                    if resolution.status in ("MATCHED_HIGH", "MATCHED_MEDIUM"):
+                        m_status = "matched"
+                    elif resolution.status == "NEEDS_REVIEW":
+                        m_status = "needs_review"
+                    else:
+                        m_status = "unmatched"
+                        merchant_id = None
+
+                    score_dec = Decimal(str(round(resolution.score, 2))) if resolution.score else None
 
                     txn = Transaction(
                         user_id=user_id,
@@ -275,7 +306,7 @@ class ImportService:
                         external_synthetic_id=r.get("external_synthetic_id"),
                         transaction_date=r["transaction_date"],
                         raw_descriptor=r["raw_descriptor"],
-                        normalised_descriptor=r["normalised_descriptor"],
+                        normalised_descriptor=resolution.normalised_descriptor or r["normalised_descriptor"],
                         amount=r["amount"],
                         currency=r["currency"],
                         direction=r["direction"],
@@ -285,11 +316,30 @@ class ImportService:
                         source_row_number=r["source_row_number"],
                         raw_source_snapshot=r["raw_source_snapshot"],
                         is_synthetic=True,
+                        # Merchant resolution fields
+                        merchant_id=merchant_id,
+                        merchant_match_status=m_status,
+                        merchant_match_method=resolution.match_method,
+                        merchant_match_score=score_dec,
+                        merchant_match_confidence=resolution.confidence_band,
+                        merchant_match_reason=resolution.explanation,
+                        matched_descriptor_alias_id=resolution.matched_alias_id,
+                        matcher_version=DEFAULT_MATCHING_CONFIG.matcher_version,
+                        matched_at=now,
                     )
                     new_records.append(txn)
 
+                    if resolution.status in ("NEEDS_REVIEW", "UNRESOLVED"):
+                        review_items_to_queue.append((txn, resolution))
+
                 if new_records:
                     db.add_all(new_records)
+                    db.flush()  # Flush so txn.id is populated
+
+                # Add review items for transactions needing review
+                for txn, resolution in review_items_to_queue:
+                    ReviewService.queue_for_review(db, user_id, txn, resolution)
+
                 accepted_count = len(new_records)
 
             else:  # notifications

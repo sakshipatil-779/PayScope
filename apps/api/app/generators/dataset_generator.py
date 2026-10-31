@@ -69,3 +69,4 @@ class DatasetGenerator:
             "transactions": transactions,
             "notifications": notifications,
         }
+

@@ -89,12 +89,24 @@ export default async function Home() {
               <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
                 Mandate<span className="text-emerald-400">Lens</span>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 font-normal">
-                  v0.3.0 (Phase 3)
+                  v0.4.0 (Phase 4)
                 </span>
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-xs font-medium">
+          <div className="flex items-center gap-3 text-xs font-medium">
+            <Link
+              href="/merchants"
+              className="px-3 py-1.5 rounded-md border border-slate-800 bg-slate-900 text-slate-300 hover:text-white transition-colors"
+            >
+              Merchants
+            </Link>
+            <Link
+              href="/merchant-review"
+              className="px-3 py-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition-colors"
+            >
+              Review Queue
+            </Link>
             <Link
               href="/upload"
               className="px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm transition-colors"

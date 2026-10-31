@@ -293,10 +293,22 @@ export default function UploadPage() {
 
           <div className="flex items-center gap-3">
             <Link
+              href="/merchants"
+              className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
+            >
+              Merchants
+            </Link>
+            <Link
+              href="/merchant-review"
+              className="text-xs px-3 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition-colors"
+            >
+              Review Queue
+            </Link>
+            <Link
               href="/"
               className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
             >
-              Back to Home
+              Home
             </Link>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />

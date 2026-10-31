@@ -199,3 +199,4 @@ ONE_OFF_MERCHANTS: List[MerchantFixture] = [
     MerchantFixture("MedPlus Synthetic Chemist", "health_fitness", ["MEDPLUS PHARMACY IND", "POS MEDPLUS BLR"], "card", 560.0, "one_off"),
     MerchantFixture("Amazon Synthetic Retail", "shopping", ["AMAZON SELLER SERVICES BLR", "AMZN RETAIL INDIA"], "card", 1899.0, "one_off"),
 ]
+

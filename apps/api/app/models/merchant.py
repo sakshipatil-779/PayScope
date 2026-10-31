@@ -1,10 +1,10 @@
 """Merchant SQLAlchemy 2.0 model."""
 import uuid
 from datetime import datetime, date
-from typing import Optional
+from typing import List, Optional
 from sqlalchemy import Boolean, Date, DateTime, String, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 
@@ -43,4 +43,15 @@ class Merchant(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    # Relationships
+    aliases: Mapped[List["DescriptorAlias"]] = relationship(
+        "DescriptorAlias",
+        back_populates="merchant",
+        cascade="all, delete-orphan",
+    )
+    transactions: Mapped[List["Transaction"]] = relationship(
+        "Transaction",
+        back_populates="merchant",
     )

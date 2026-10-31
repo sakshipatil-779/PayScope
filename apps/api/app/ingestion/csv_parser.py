@@ -40,3 +40,4 @@ class CSVParser:
             rows.append(cleaned_row)
 
         return headers, rows
+

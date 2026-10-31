@@ -78,3 +78,4 @@ def test_transaction_fields_and_synthetic_provenance():
         assert txn["currency"] == "INR"
         assert txn["transaction_status"] == "successful"
         assert len(txn["raw_descriptor"]) > 0
+

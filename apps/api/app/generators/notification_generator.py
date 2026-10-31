@@ -287,3 +287,4 @@ def generate_notifications(config: GeneratorConfig, fake: Faker) -> List[Dict[st
     # Sort deterministically
     notifications.sort(key=lambda n: (n["event_timestamp"], n["external_synthetic_id"]))
     return notifications
+

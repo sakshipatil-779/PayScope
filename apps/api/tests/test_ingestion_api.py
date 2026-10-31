@@ -171,3 +171,4 @@ def test_demo_generate_endpoint(client: TestClient):
     assert data["success"] is True
     assert data["seed"] == 100
     assert data["manifest"]["summary"]["transaction_count"] >= 80
+

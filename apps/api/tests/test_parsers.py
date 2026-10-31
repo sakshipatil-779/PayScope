@@ -134,3 +134,4 @@ def test_json_notification_parser_and_normalizer():
     assert len(norm.valid_records) == 1
     assert norm.valid_records[0]["external_synthetic_id"] == "NOTIF-001"
     assert norm.valid_records[0]["event_type"] == "mandate_created"
+

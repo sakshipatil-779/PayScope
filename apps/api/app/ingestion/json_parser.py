@@ -40,3 +40,4 @@ class JSONParser:
 
         headers = sorted(list(all_keys))
         return headers, rows
+

@@ -50,3 +50,4 @@ class XLSXParser:
 
         wb.close()
         return headers, rows
+

@@ -6,6 +6,8 @@ from app.models.import_record import ImportRecord
 from app.models.transaction import Transaction
 from app.models.payment_notification import PaymentNotification
 from app.models.merchant import Merchant
+from app.models.descriptor_alias import DescriptorAlias
+from app.models.manual_review_item import ManualReviewItem
 from app.models.audit_event import AuditEvent
 
 __all__ = [
@@ -16,5 +18,7 @@ __all__ = [
     "Transaction",
     "PaymentNotification",
     "Merchant",
+    "DescriptorAlias",
+    "ManualReviewItem",
     "AuditEvent",
 ]

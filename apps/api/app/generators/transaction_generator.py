@@ -170,3 +170,4 @@ def generate_transactions(config: GeneratorConfig, fake: Faker) -> List[Dict[str
     # Sort deterministically by date and external_synthetic_id
     transactions.sort(key=lambda t: (t["transaction_date"], t["external_synthetic_id"]))
     return transactions
+

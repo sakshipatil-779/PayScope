@@ -78,3 +78,4 @@ class PaymentNotificationRepository:
             .offset(offset)
         )
         return list(db.scalars(stmt).all())
+

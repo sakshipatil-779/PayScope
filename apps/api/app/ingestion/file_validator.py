@@ -92,3 +92,4 @@ class FileValidator:
             checksum_sha256=checksum,
             error_message=None,
         )
+

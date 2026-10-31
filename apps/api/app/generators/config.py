@@ -15,3 +15,4 @@ class GeneratorConfig:
     user_workspace_key: str = "demo_workspace_primary"
     min_transactions: int = 80
     min_notifications: int = 15
+

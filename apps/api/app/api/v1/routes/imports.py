@@ -197,3 +197,4 @@ def get_import_status(
         "rejected_count": imp.rejected_count,
         "finished_at": imp.finished_at.isoformat() if imp.finished_at else None,
     }
+

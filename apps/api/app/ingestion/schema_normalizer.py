@@ -218,3 +218,4 @@ class SchemaNormalizer:
             errors=errors,
             total_rows=len(rows),
         )
+

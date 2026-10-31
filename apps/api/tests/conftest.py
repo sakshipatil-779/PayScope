@@ -54,7 +54,7 @@ def db_session() -> Generator[Session, None, None]:
         with test_engine.begin() as conn:
             conn.execute(
                 text(
-                    "TRUNCATE TABLE payment_notifications, transactions, imports, accounts, audit_events, merchants, demo_users CASCADE;"
+                    "TRUNCATE TABLE manual_review_items, descriptor_aliases, payment_notifications, transactions, imports, accounts, audit_events, merchants, demo_users CASCADE;"
                 )
             )
         session.close()
