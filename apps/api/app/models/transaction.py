@@ -2,7 +2,7 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -152,3 +152,6 @@ class Transaction(Base):
     import_record: Mapped[Optional["ImportRecord"]] = relationship("ImportRecord", back_populates="transactions")
     merchant: Mapped[Optional["Merchant"]] = relationship("Merchant", back_populates="transactions")
     matched_alias: Mapped[Optional["DescriptorAlias"]] = relationship("DescriptorAlias", back_populates="transactions")
+    commitment_transactions: Mapped[List["CommitmentTransaction"]] = relationship(
+        "CommitmentTransaction", back_populates="transaction", cascade="all, delete-orphan"
+    )

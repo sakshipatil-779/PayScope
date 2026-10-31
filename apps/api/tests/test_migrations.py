@@ -1,4 +1,5 @@
 """Integration tests verifying Alembic migration upgrade and downgrade cycles."""
+from pathlib import Path
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import text
@@ -7,7 +8,8 @@ from app.core.config import settings
 
 def get_test_alembic_config() -> Config:
     """Create an Alembic config targeted at the test database."""
-    cfg = Config("alembic.ini")
+    ini_path = Path(__file__).resolve().parent.parent / "alembic.ini"
+    cfg = Config(str(ini_path))
     cfg.set_main_option("sqlalchemy.url", settings.TEST_DATABASE_URL)
     return cfg
 
@@ -23,7 +25,7 @@ def test_migration_downgrade_and_reupgrade(engine):
     with engine.connect() as conn:
         result = conn.execute(
             text(
-                "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('demo_users', 'transactions', 'accounts');"
+                "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('demo_users', 'transactions', 'accounts', 'commitments', 'commitment_transactions');"
             )
         ).scalar()
         assert result == 0
@@ -35,7 +37,7 @@ def test_migration_downgrade_and_reupgrade(engine):
     with engine.connect() as conn:
         result = conn.execute(
             text(
-                "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('demo_users', 'transactions', 'accounts');"
+                "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('demo_users', 'transactions', 'accounts', 'commitments', 'commitment_transactions');"
             )
         ).scalar()
-        assert result == 3
+        assert result == 5

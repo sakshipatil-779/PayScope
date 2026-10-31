@@ -66,3 +66,8 @@ class DemoUser(Base):
         "AuditEvent",
         back_populates="user",
     )
+    commitments: Mapped[List["Commitment"]] = relationship(
+        "Commitment",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )

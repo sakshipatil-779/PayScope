@@ -192,6 +192,12 @@ export default function ManualReviewPage() {
 
           <div className="flex items-center gap-3">
             <Link
+              href="/commitments"
+              className="text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition-colors font-semibold"
+            >
+              Commitments
+            </Link>
+            <Link
               href="/merchants"
               className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 transition-colors"
             >

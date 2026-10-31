@@ -9,6 +9,8 @@ from app.models.merchant import Merchant
 from app.models.descriptor_alias import DescriptorAlias
 from app.models.manual_review_item import ManualReviewItem
 from app.models.audit_event import AuditEvent
+from app.models.commitment import Commitment
+from app.models.commitment_transaction import CommitmentTransaction
 
 __all__ = [
     "Base",
@@ -21,4 +23,6 @@ __all__ = [
     "DescriptorAlias",
     "ManualReviewItem",
     "AuditEvent",
+    "Commitment",
+    "CommitmentTransaction",
 ]

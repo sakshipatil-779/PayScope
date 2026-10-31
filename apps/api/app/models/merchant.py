@@ -55,3 +55,7 @@ class Merchant(Base):
         "Transaction",
         back_populates="merchant",
     )
+    commitments: Mapped[List["Commitment"]] = relationship(
+        "Commitment",
+        back_populates="merchant",
+    )
