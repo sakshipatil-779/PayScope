@@ -1,4 +1,4 @@
-"""MandateLens FastAPI Application Entry Point."""
+"""PayScope FastAPI Application Entry Point."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
