@@ -1,0 +1,63 @@
+{
+  "generator": "MandateLens Synthetic Generator v1.0",
+  "seed": 100,
+  "currency": "INR",
+  "date_range": {
+    "start": "2026-05-01",
+    "end": "2026-10-31"
+  },
+  "summary": {
+    "transaction_count": 121,
+    "notification_count": 18,
+    "total_debit_amount": 142950.28,
+    "total_credit_amount": 750000.0,
+    "unique_scenarios_covered": 12
+  },
+  "scenario_breakdown": {
+    "transactions_by_scenario": {
+      "scenario_4_unused_membership": 6,
+      "scenario_9_autopay_high_limit": 6,
+      "scenario_11_card_mandate": 6,
+      "one_off": 42,
+      "scenario_10_irregular_recurring": 7,
+      "scenario_1_dual_descriptor": 6,
+      "scenario_7_variable_utility": 6,
+      "scenario_3_trial_conversion": 7,
+      "scenario_8_category_overlap_a": 6,
+      "scenario_2_price_increase": 6,
+      "scenario_12_ambiguous_manual_review": 6,
+      "scenario_5_post_cancel_charge": 4,
+      "scenario_8_category_overlap_b": 6,
+      "scenario_6_annual_insurance": 1,
+      "salary_credit": 6
+    },
+    "notifications_by_scenario": {
+      "scenario_4_unused_membership": 1,
+      "scenario_1_dual_descriptor": 3,
+      "scenario_9_autopay_high_limit": 2,
+      "scenario_11_card_mandate": 2,
+      "scenario_7_variable_utility": 1,
+      "scenario_3_trial_conversion": 2,
+      "scenario_8_category_overlap_a": 1,
+      "scenario_6_annual_insurance": 1,
+      "scenario_8_category_overlap_b": 1,
+      "scenario_2_price_increase": 2,
+      "scenario_5_post_cancel_charge": 2
+    }
+  },
+  "supported_scenarios": [
+    "scenario_1_dual_descriptor",
+    "scenario_2_price_increase",
+    "scenario_3_trial_conversion",
+    "scenario_4_unused_membership",
+    "scenario_5_post_cancel_charge",
+    "scenario_6_annual_insurance",
+    "scenario_7_variable_utility",
+    "scenario_8_category_overlap",
+    "scenario_9_autopay_high_limit",
+    "scenario_10_irregular_recurring",
+    "scenario_11_card_mandate",
+    "scenario_12_ambiguous_manual_review"
+  ],
+  "is_synthetic": true
+}

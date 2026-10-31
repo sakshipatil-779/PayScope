@@ -40,3 +40,16 @@ class UserRepository:
         """Retrieve a demo user by unique workspace key."""
         stmt = select(DemoUser).where(DemoUser.workspace_key == workspace_key)
         return db.scalar(stmt)
+
+    @classmethod
+    def get_or_create_demo_user(
+        cls,
+        db: Session,
+        workspace_key: str = "demo_workspace_primary",
+        display_name: str = "Demo User",
+    ) -> DemoUser:
+        """Retrieve existing demo user or create one if not found."""
+        user = cls.get_by_workspace_key(db, workspace_key)
+        if not user:
+            user = cls.create(db, workspace_key=workspace_key, display_name=display_name)
+        return user

@@ -62,3 +62,8 @@ class ImportRecord(Base):
         back_populates="import_record",
         cascade="all, delete-orphan",
     )
+    payment_notifications: Mapped[List["PaymentNotification"]] = relationship(
+        "PaymentNotification",
+        back_populates="import_record",
+        cascade="all, delete-orphan",
+    )

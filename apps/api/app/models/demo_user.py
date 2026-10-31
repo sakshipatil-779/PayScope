@@ -57,6 +57,11 @@ class DemoUser(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    payment_notifications: Mapped[List["PaymentNotification"]] = relationship(
+        "PaymentNotification",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
     audit_events: Mapped[List["AuditEvent"]] = relationship(
         "AuditEvent",
         back_populates="user",

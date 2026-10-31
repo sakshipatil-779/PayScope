@@ -9,11 +9,20 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.main import app
 
+# Explicit safety check: test engine must point strictly to test database
+assert "mandatelens_test" in settings.TEST_DATABASE_URL, (
+    f"FATAL: Safety check failed! TEST_DATABASE_URL points to non-test database: {settings.TEST_DATABASE_URL}"
+)
+
 # Test database engine connected to mandatelens_test
 test_engine = create_engine(
     settings.TEST_DATABASE_URL,
     pool_pre_ping=True,
     echo=False,
+)
+
+assert "mandatelens_test" in str(test_engine.url), (
+    f"FATAL: Safety check failed! test_engine URL is not mandatelens_test: {test_engine.url}"
 )
 
 TestingSessionLocal = sessionmaker(
@@ -45,7 +54,7 @@ def db_session() -> Generator[Session, None, None]:
         with test_engine.begin() as conn:
             conn.execute(
                 text(
-                    "TRUNCATE TABLE transactions, imports, accounts, audit_events, merchants, demo_users CASCADE;"
+                    "TRUNCATE TABLE payment_notifications, transactions, imports, accounts, audit_events, merchants, demo_users CASCADE;"
                 )
             )
         session.close()

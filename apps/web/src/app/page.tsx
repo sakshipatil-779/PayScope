@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const dynamic = "force-dynamic";
 
 interface HealthData {
@@ -87,12 +89,18 @@ export default async function Home() {
               <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
                 Mandate<span className="text-emerald-400">Lens</span>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 font-normal">
-                  v0.1.0 (Phase 1)
+                  v0.3.0 (Phase 3)
                 </span>
               </span>
             </div>
           </div>
           <div className="flex items-center gap-4 text-xs font-medium">
+            <Link
+              href="/upload"
+              className="px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm transition-colors"
+            >
+              Upload Centre
+            </Link>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800/70 border border-slate-700/60 text-slate-300">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
               Synthetic Data Only
