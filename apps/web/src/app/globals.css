@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #030712;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
@@ -12,15 +12,149 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Cinematic Fintech Hero Keyframe Animations (strictly non-scrolling) */
+@keyframes stage1Reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stage2HeroVisual {
+  0% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes stage3ContentReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ringPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0.7;
+  }
+}
+
+@keyframes ringPulseSecondary {
+  0% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes ambientCyanGlow {
+  0%, 100% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 25px rgba(6, 182, 212, 0.35));
+  }
+  50% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 45px rgba(20, 184, 166, 0.6));
+  }
+}
+
+.anim-stage-1 {
+  animation: stage1Reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-stage-2 {
+  animation: stage2HeroVisual 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0;
+}
+
+.anim-stage-3 {
+  animation: stage3ContentReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+  opacity: 0;
+}
+
+.anim-stage-3-delayed {
+  animation: stage3ContentReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+  opacity: 0;
+}
+
+.anim-ring-primary {
+  animation: ringPulse 6s ease-in-out infinite;
+}
+
+.anim-ring-secondary {
+  animation: ringPulseSecondary 8s ease-in-out infinite;
+}
+
+.anim-float-1 {
+  animation: floatGentle 5s ease-in-out infinite;
+}
+
+.anim-float-2 {
+  animation: floatGentle 6s ease-in-out 1s infinite;
+}
+
+.anim-float-3 {
+  animation: floatGentle 5.5s ease-in-out 2s infinite;
+}
+
+.anim-ambient-glow {
+  animation: ambientCyanGlow 5s ease-in-out infinite;
+}
+
+/* Reduced-Motion Mode Safeguard */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

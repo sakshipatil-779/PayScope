@@ -91,3 +91,8 @@ class DemoUser(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    savings_scenarios: Mapped[List["SavingsScenario"]] = relationship(
+        "SavingsScenario",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )

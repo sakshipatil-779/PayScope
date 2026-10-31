@@ -1,11 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 interface HealthData {
-
-
-
   status: string;
   service: string;
   version: string;
@@ -74,242 +72,238 @@ async function getBackendHealth(): Promise<HealthResult> {
 export default async function Home() {
   const health = await getBackendHealth();
 
-
-
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
-      {/* Top Navigation */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-lg shadow-sm">
+    <div className="relative min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 overflow-hidden select-none">
+      {/* ==================================================================== */}
+      {/* BACKGROUND: Cinematic City / Data-Network Visual (Supplied Asset)    */}
+      {/* Masked with deep navy and cyan luminous gradient overlays            */}
+      {/* ==================================================================== */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Supplied Image Asset */}
+        <div className="absolute inset-0 anim-stage-2">
+          <Image
+            src="/images/mandatelens-fintech-hero.jpg"
+            alt="City data network recurring payment intelligence visual"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center scale-105 opacity-40 brightness-75 contrast-125"
+          />
+        </div>
+
+        {/* Luminous radial glow over the central city node */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-cyan-500/15 blur-[120px] anim-ambient-glow" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-teal-400/10 blur-[90px]" />
+
+        {/* Deep Vignette Gradient Overlays for perfect typographic contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/40 to-slate-950/95" />
+
+        {/* Circular Financial Data Rings around central focal point */}
+        <div className="absolute top-[48%] left-1/2 pointer-events-none">
+          <div className="w-[360px] h-[360px] rounded-full border border-cyan-400/25 anim-ring-primary" />
+          <div className="w-[520px] h-[520px] rounded-full border border-teal-500/15 border-dashed anim-ring-secondary" />
+          <div className="w-[720px] h-[720px] rounded-full border border-cyan-500/10" />
+        </div>
+      </div>
+
+      {/* ==================================================================== */}
+      {/* HEADER: Stage 1 Reveal Navigation Bar                                */}
+      {/* ==================================================================== */}
+      <header className="relative z-50 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-md anim-stage-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Logo & Brand Identity */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400/20 to-cyan-500/20 border border-cyan-400/40 flex items-center justify-center font-bold text-cyan-300 text-lg shadow-[0_0_15px_rgba(6,182,212,0.25)] transition-all group-hover:border-cyan-300">
               M
             </div>
             <div className="flex flex-col">
               <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-emerald-400">Lens</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 font-normal">
-                  v0.5.0 (Phase 5)
+                Mandate<span className="text-cyan-400">Lens</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-950/60 border border-cyan-800/40 text-cyan-300 font-mono">
+                  Phase 7
                 </span>
               </span>
             </div>
-          </div>
-          <div className="flex items-center gap-3 text-xs font-medium">
+          </Link>
+
+          {/* Primary Platform Navigation */}
+          <nav className="hidden md:flex items-center gap-1.5 text-xs font-medium">
             <Link
-              href="/insights"
-              className="text-xs px-3 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition-colors font-medium"
+              href="/financial-impact"
+              className="px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all font-semibold shadow-[0_0_12px_rgba(6,182,212,0.15)]"
             >
-              Insights
+              Financial Impact
+            </Link>
+            <Link
+              href="/savings"
+              className="px-3 py-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 transition-all font-semibold"
+            >
+              Savings & Projections
             </Link>
             <Link
               href="/commitments"
-              className="px-3 py-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition-colors font-semibold"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
             >
               Commitments
             </Link>
             <Link
+              href="/insights"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
+            >
+              Insights
+            </Link>
+            <Link
+              href="/upload"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
+            >
+              Upload Centre
+            </Link>
+            <Link
               href="/merchants"
-              className="px-3 py-1.5 rounded-md border border-slate-800 bg-slate-900 text-slate-300 hover:text-white transition-colors"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
             >
               Merchants
             </Link>
             <Link
               href="/merchant-review"
-              className="px-3 py-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition-colors"
+              className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
             >
               Review Queue
             </Link>
-            <Link
-              href="/upload"
-              className="px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm transition-colors"
-            >
-              Upload Centre
-            </Link>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800/70 border border-slate-700/60 text-slate-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              Synthetic Data Only
+          </nav>
+
+          {/* Service Status Indicator */}
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              Synthetic Mode
             </span>
+            {health.connected ? (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                API 200 OK
+              </span>
+            ) : (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                API Offline
+              </span>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-12">
-        {/* Hero Section */}
-        <section className="flex flex-col items-start gap-4 max-w-3xl pt-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <span>Find the money leaving quietly.</span>
+      {/* ==================================================================== */}
+      {/* HERO SECTION: Stage 3 Product Identity & Floating Insights           */}
+      {/* STRICTLY NO SCROLLING EFFECTS — Fits in initial viewport             */}
+      {/* ==================================================================== */}
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center py-8 lg:py-16">
+        {/* Floating Insight Pill 1 (Top Left) */}
+        <div className="hidden lg:flex absolute left-8 top-28 items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-amber-500/30 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.4)] anim-float-1 anim-stage-3">
+          <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+          <div className="text-left font-mono">
+            <span className="text-[11px] text-amber-300 font-semibold block">Sustained Price Alert</span>
+            <span className="text-xs text-slate-200">+₹200/mo CloudDesk Pro</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
-            Recurring Payment Intelligence Platform
-          </h1>
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-            Discover recurring payments, understand hidden charges, detect silent price increases and take control of your financial commitments.
-          </p>
-        </section>
+        </div>
 
-        {/* Live Connectivity Card */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 rounded-xl border border-slate-800 bg-slate-900/50 p-6 shadow-sm flex flex-col justify-between gap-6">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Backend Service Health
-                </span>
-                {health.connected ? (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    API Connected
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                    <span className="w-2 h-2 rounded-full bg-rose-400" />
-                    API Unavailable
-                  </span>
-                )}
-              </div>
-              <h2 className="text-xl font-semibold text-white">
-                FastAPI Health Check Endpoint
-              </h2>
-              <p className="text-sm text-slate-400">
-                Server-side communication test against <code className="text-slate-200 font-mono bg-slate-800 px-1.5 py-0.5 rounded text-xs">{health.url}</code> (non-cached).
-              </p>
-            </div>
+        {/* Floating Insight Pill 2 (Top Right) */}
+        <div className="hidden lg:flex absolute right-8 top-28 items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.4)] anim-float-2 anim-stage-3">
+          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+          <div className="text-left font-mono">
+            <span className="text-[11px] text-cyan-300 font-semibold block">Annual Recurring Outflow</span>
+            <span className="text-xs text-slate-200">₹14,380/yr in Confirmed Mandates</span>
+          </div>
+        </div>
 
-            <div className="rounded-lg bg-slate-950/70 border border-slate-800/80 p-4 font-mono text-xs text-slate-300 space-y-1.5">
-              <div className="flex justify-between">
-                <span className="text-slate-500">Target Endpoint:</span>
-                <span className="text-slate-200">{health.url}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Status Response:</span>
-                <span className={health.connected ? "text-emerald-400 font-semibold" : "text-rose-400 font-semibold"}>
-                  {health.connected ? "200 OK — " + JSON.stringify(health.data) : "Unreachable (" + (health.error || "offline") + ")"}
-                </span>
-              </div>
-              {health.connected && health.data && (
-                <>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Registered Service:</span>
-                    <span className="text-slate-200">{health.data.service}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">API Version:</span>
-                    <span className="text-slate-200">{health.data.version}</span>
-                  </div>
-                </>
-              )}
-              <div className="flex justify-between">
-                <span className="text-slate-500">Checked At:</span>
-                <span className="text-slate-400">{health.timestamp}</span>
-              </div>
-            </div>
+        {/* Floating Insight Pill 3 (Bottom Center-Right) */}
+        <div className="hidden lg:flex absolute right-16 bottom-16 items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-teal-500/30 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.4)] anim-float-3 anim-stage-3-delayed">
+          <div className="w-2.5 h-2.5 rounded-full bg-teal-400 shadow-[0_0_8px_rgba(20,184,166,0.8)]" />
+          <div className="text-left font-mono">
+            <span className="text-[11px] text-teal-300 font-semibold block">Verified Inactivity</span>
+            <span className="text-xs text-slate-200">Cult Gym: 0 Visits / 90 Days</span>
+          </div>
+        </div>
 
-            {!health.connected && (
-              <div className="rounded-lg bg-rose-950/30 border border-rose-900/40 p-4 text-xs text-rose-200 space-y-2">
-                <p className="font-semibold text-rose-300">How to start the FastAPI backend:</p>
-                <pre className="bg-slate-950 p-2 rounded text-slate-300 overflow-x-auto">
-cd apps/api{"\n"}
-uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-                </pre>
-                <p className="text-slate-400">Once started, refresh this page to establish the live server connection.</p>
-              </div>
-            )}
+        {/* Central Content Composition */}
+        <div className="max-w-3xl flex flex-col items-center gap-6">
+          {/* Eyebrow Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-teal-500/10 via-cyan-500/15 to-teal-500/10 border border-cyan-400/30 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.2)] anim-stage-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>Autonomous Recurring Payment Intelligence</span>
           </div>
 
-          {/* Quick Specifications Card */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 shadow-sm flex flex-col justify-between gap-4">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Phase 1 Foundation
-              </span>
-              <h2 className="text-lg font-semibold text-white mt-1">
-                Monorepo Architecture
-              </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Clean separation between web presentation and Python financial analytics.
-              </p>
-            </div>
-
-            <ul className="text-xs space-y-2 text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
-                <span><strong>apps/web:</strong> Next.js 16 (App Router, TypeScript, Tailwind CSS)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
-                <span><strong>apps/api:</strong> FastAPI + Uvicorn (Python 3.13, Pydantic v2)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5 flex-shrink-0" />
-                <span><strong>Persistence:</strong> PostgreSQL + SQLAlchemy 2.0 (Phase 2)</span>
-              </li>
-            </ul>
-
-            <div className="pt-2 border-t border-slate-800">
-              <span className="text-[11px] text-slate-500 block">
-                Operating strictly under AGENTS.md phase-gated protocol.
-              </span>
-            </div>
-          </div>
-        </section>
-
-        {/* Project Roadmap & Current Status */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/30 p-6 flex flex-col gap-6">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Implementation Roadmap
+          {/* Primary Cinematic Headline */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.08] anim-stage-3">
+            Every recurring payment.{" "}
+            <span className="block mt-1 text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-cyan-400 to-cyan-200 drop-shadow-[0_0_35px_rgba(6,182,212,0.4)]">
+              Finally, in focus.
             </span>
-            <h2 className="text-xl font-semibold text-white">
-              Phased Build Status
-            </h2>
+          </h1>
+
+          {/* Supporting Copy */}
+          <p className="text-base sm:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl anim-stage-3-delayed">
+            Discover hidden commitments, understand recurring costs, detect unexpected changes and take control of your financial outflows.
+          </p>
+
+          {/* Primary & Secondary Call-to-Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto anim-stage-3-delayed">
+            <Link
+              href="/financial-impact"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold text-sm tracking-wide transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_45px_rgba(6,182,212,0.6)] hover:scale-[1.02] active:scale-[0.98] text-center"
+            >
+              Explore Your Financial Picture
+            </Link>
+            <Link
+              href="/commitments"
+              className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 hover:border-cyan-500/50 text-slate-200 hover:text-white font-semibold text-sm transition-all backdrop-blur-md text-center"
+            >
+              See How It Works
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            <div className="p-4 rounded-lg bg-slate-900/70 border border-slate-800 flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-200">Phase 0: Audit</span>
-                <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">Complete</span>
-              </div>
-              <p className="text-slate-400 text-[11px]">Workspace audited, toolchains verified, documentation aligned.</p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-emerald-950/20 border border-emerald-800/40 flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-emerald-300">Phase 1: Skeleton</span>
-                <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">Active</span>
-              </div>
-              <p className="text-slate-300 text-[11px]">Monorepo established, Next.js & FastAPI runnable shells verified.</p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-900/70 border border-slate-800 flex flex-col gap-2 opacity-70">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300">Phase 2: Database</span>
-                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[10px]">Next</span>
-              </div>
-              <p className="text-slate-400 text-[11px]">PostgreSQL, SQLAlchemy 2.0, Alembic migrations, demo user workspace.</p>
-            </div>
-
-            <div className="p-4 rounded-lg bg-slate-900/70 border border-slate-800 flex flex-col gap-2 opacity-70">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-300">Phases 3–12</span>
-                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[10px]">Upcoming</span>
-              </div>
-              <p className="text-slate-400 text-[11px]">Synthetic data, merchant resolution, recurrence engine, playbooks.</p>
-            </div>
+          {/* Key Assurance Signals */}
+          <div className="flex flex-wrap justify-center items-center gap-6 pt-6 text-xs text-slate-400 anim-stage-3-delayed">
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Explainable Calculations
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Synthetic Data Sandbox
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Evidence-Backed Auditing
+            </span>
           </div>
-        </section>
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-900/40 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>
-            MandateLens Prototype — Synthetic-Data-Only Recurring-Payment Intelligence.
-          </p>
-          <p>
-            No real banking credentials or financial transactions are ever requested or processed.
-          </p>
+      {/* ==================================================================== */}
+      {/* FOOTER: Discreet System & Attribution Bar                            */}
+      {/* ==================================================================== */}
+      <footer className="relative z-10 border-t border-slate-900 bg-slate-950/80 backdrop-blur-sm py-4 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>MandateLens v0.7.0 &bull; Synthetic Financial Intelligence Platform</span>
+          <div className="flex items-center gap-4 text-[11px]">
+            <Link href="/financial-impact" className="hover:text-cyan-400 transition-colors">
+              Annual Outflows
+            </Link>
+            <Link href="/savings" className="hover:text-teal-400 transition-colors">
+              What-If Calculator
+            </Link>
+            <Link href="/upload" className="hover:text-slate-300 transition-colors">
+              Statement Ingestion
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
