@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 
@@ -100,7 +101,7 @@ export default function CommitmentDetailPage({
   const [editCadence, setEditCadence] = useState<string>("monthly");
   const [savingEdit, setSavingEdit] = useState<boolean>(false);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   useEffect(() => {
     let ignore = false;

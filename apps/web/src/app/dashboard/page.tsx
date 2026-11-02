@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import AppHeader from "@/components/navigation/AppHeader";
+import { getApiBaseUrl, fetchWithRetry } from "@/lib/api";
 
 interface DashboardKPIs {
   active_commitments_count: number;
@@ -56,26 +57,50 @@ interface DashboardSummaryData {
 }
 
 export default function UnifiedDashboardPage() {
-  const [data, setData] = useState<DashboardSummaryData | null>(null);
+    const [data, setData] = useState<DashboardSummaryData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Connecting to PayScope intelligence engine...");
   const [error, setError] = useState<string | null>(null);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedSuccess, setSeedSuccess] = useState<string | null>(null);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
+
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const loadDashboard = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    setLoadingMessage("Connecting to PayScope intelligence engine...");
+    setReloadKey((k) => k + 1);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
-    async function loadDashboard() {
+    async function fetchSummary() {
       try {
-        const res = await fetch(`${apiBase}/api/v1/dashboard/summary`);
-        if (!ignore && res.ok) {
-          const json = await res.json();
-          setData(json);
-        } else if (!ignore) {
-          setError("Failed to load dashboard data.");
+        const res = await fetchWithRetry("/api/v1/dashboard/summary", {
+          retries: 3,
+          retryDelayMs: 1800,
+          timeoutMs: 25000,
+          onRetry: (attempt) => {
+            if (!ignore) {
+              setLoadingMessage(`Waking up PayScope backend on Render (attempt ${attempt}/3)...`);
+            }
+          },
+        });
+
+        if (!ignore) {
+          if (res.ok) {
+            const json = await res.json();
+            setData(json);
+          } else {
+            setError(`Backend responded with HTTP ${res.status}: ${res.statusText}`);
+          }
         }
       } catch (err) {
         if (!ignore) {
-          setError(err instanceof Error ? err.message : "Network error");
+          setError(err instanceof Error ? err.message : "Failed to connect to backend server.");
         }
       } finally {
         if (!ignore) {
@@ -83,11 +108,31 @@ export default function UnifiedDashboardPage() {
         }
       }
     }
-    loadDashboard();
+    fetchSummary();
     return () => {
       ignore = true;
     };
-  }, [apiBase]);
+  }, [reloadKey]);
+
+  const handleSeedDemoData = async () => {
+    setIsSeeding(true);
+    setSeedSuccess(null);
+    try {
+      const res = await fetch(`${apiBase}/api/v1/demo/seed`, {
+        method: "POST",
+      });
+      if (res.ok) {
+        setSeedSuccess("Synthetic demo dataset successfully loaded!");
+        await loadDashboard();
+      } else {
+        setError("Failed to seed demo dataset.");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error initializing demo dataset.");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   const formatINR = (val: number | string | undefined | null) => {
     const num = Number(val) || 0;
@@ -98,11 +143,15 @@ export default function UnifiedDashboardPage() {
     }).format(num);
   };
 
-  if (loading) {
+    if (loading) {
     return (
       <div className="min-h-screen bg-[#011633] text-[#F4F7FB] flex flex-col">
         <AppHeader />
         <div className="flex-1 max-w-7xl w-full mx-auto p-6 sm:p-8 flex flex-col gap-6 animate-pulse">
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
+            <div className="w-4 h-4 rounded-full border-2 border-[#00B8C7] border-t-transparent animate-spin" />
+            <span className="text-xs text-[#00E0E0]">{loadingMessage}</span>
+          </div>
           <div className="h-20 bg-[#082746] rounded-2xl border border-[#164B68]" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[...Array(6)].map((_, i) => (
@@ -123,15 +172,36 @@ export default function UnifiedDashboardPage() {
       <div className="min-h-screen bg-[#011633] text-white flex flex-col">
         <AppHeader />
         <div className="flex-1 flex items-center justify-center p-4">
-          <div className="max-w-md w-full p-6 rounded-2xl bg-[#082746] border border-[#164B68] text-center flex flex-col gap-4">
-            <h2 className="text-lg font-bold text-rose-400">Dashboard Unavailable</h2>
-            <p className="text-xs text-[#A9BBCD]">{error || "Could not retrieve summary metrics."}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 rounded-xl bg-[#031B38] border border-[#164B68] text-xs font-semibold hover:border-[#00B8C7]"
-            >
-              Retry
-            </button>
+          <div className="max-w-lg w-full p-6 sm:p-8 rounded-2xl bg-[#082746] border border-[#164B68] text-center flex flex-col gap-4 shadow-2xl">
+            <div className="w-12 h-12 mx-auto rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl font-bold">
+              !
+            </div>
+            <h2 className="text-lg font-bold text-white">Dashboard Service Unavailable</h2>
+            <p className="text-xs text-[#A9BBCD] leading-relaxed">
+              {error || "Could not connect to the PayScope API backend."}
+            </p>
+            <div className="p-3 rounded-xl bg-[#031B38] border border-[#164B68] text-left text-[11px] text-[#A9BBCD] space-y-1">
+              <div><strong className="text-white">API Base:</strong> <code className="text-[#00E0E0]">{apiBase}</code></div>
+              <div><strong className="text-white">Endpoint:</strong> <code>/api/v1/dashboard/summary</code></div>
+              <div className="text-[10px] text-muted-foreground pt-1">
+                If running on Render free tier, service may take up to 45 seconds to spin up on first request.
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={loadDashboard}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F08A00] to-[#FFA52B] text-[#011633] font-bold text-xs hover:brightness-110 transition-all shadow-md"
+              >
+                Retry Connection
+              </button>
+              <button
+                onClick={handleSeedDemoData}
+                disabled={isSeeding}
+                className="px-4 py-2.5 rounded-xl bg-[#031B38] border border-[#164B68] text-xs font-semibold text-white hover:border-[#00B8C7] transition-all disabled:opacity-50"
+              >
+                {isSeeding ? "Seeding..." : "Seed Synthetic Data"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -145,6 +215,13 @@ export default function UnifiedDashboardPage() {
       <AppHeader />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+        {seedSuccess && (
+          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center justify-between">
+            <span>✓ {seedSuccess}</span>
+            <button onClick={() => setSeedSuccess(null)} className="text-emerald-300 hover:text-white font-bold text-sm">×</button>
+          </div>
+        )}
+
         {/* Welcome Banner */}
         <div className="rounded-2xl bg-gradient-to-r from-[#082746] via-[#0B3152] to-[#031B38] border border-[#164B68] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
           <div>

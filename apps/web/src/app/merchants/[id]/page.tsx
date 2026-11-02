@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect, useCallback, use } from "react";
 
 import AppHeader from "@/components/navigation/AppHeader";
@@ -48,7 +49,7 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
   const [addingAlias, setAddingAlias] = useState<boolean>(false);
   const [aliasFormError, setAliasFormError] = useState<string | null>(null);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   const fetchMerchantAndAliases = useCallback(async () => {
     setLoading(true);

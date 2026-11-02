@@ -82,8 +82,8 @@ export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps)
   const startFlightToTopLeft = useCallback(() => {
     setStage("FLYING");
 
-    // Default top-left target fallback beside hamburger (x: ~160px, y: 32px)
-    let targetX = 160;
+    // Default top-left target fallback beside hamburger at extreme left (x: ~115px, y: 32px)
+    let targetX = 115;
     let targetY = 32;
 
     const targetEl =

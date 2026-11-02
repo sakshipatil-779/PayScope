@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -56,7 +57,7 @@ export default function InsightsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   const refreshInsights = async () => {
     try {

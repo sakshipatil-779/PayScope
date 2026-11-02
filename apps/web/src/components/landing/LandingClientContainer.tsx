@@ -57,10 +57,10 @@ export function LandingClientContainer({ apiConnected }: LandingClientContainerP
         headerLogoRef={headerLogoRef}
       />
 
-      {/* 2. BACKGROUND: Looping Hero Picker Visual (0s to 4.18s segment) + City Visual */}
+      {/* 2. BACKGROUND: Clearly Visible Looping Hero Picker Visual (0s to 4.18s segment) + City Visual */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Ambient Looping Video Layer */}
-        <div className="absolute inset-0 opacity-25 brightness-90 contrast-110">
+        {/* Ambient Looping Video Layer: Highly visible robotic picker & falling cards */}
+        <div className="absolute inset-0 opacity-70 md:opacity-80 brightness-95 contrast-105 transition-opacity duration-1000">
           <video
             id="ambient-hero-video"
             ref={ambientVideoRef}
@@ -70,12 +70,12 @@ export function LandingClientContainer({ apiConnected }: LandingClientContainerP
             loop
             playsInline
             preload="auto"
-            className="w-full h-full object-cover object-center pointer-events-none"
+            className="w-full h-full object-contain md:object-cover object-center pointer-events-none"
           />
         </div>
 
-        {/* Ambient City Network Fallback Backdrop */}
-        <div className="absolute inset-0 opacity-20 mix-blend-screen pointer-events-none">
+        {/* Subtle Ambient City Network Fallback Backdrop */}
+        <div className="absolute inset-0 opacity-15 mix-blend-screen pointer-events-none">
           <Image
             src="/images/mandatelens-fintech-hero.jpg"
             alt="City data network recurring payment intelligence visual"
@@ -90,9 +90,9 @@ export function LandingClientContainer({ apiConnected }: LandingClientContainerP
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#00B8C7]/15 blur-[120px] anim-ambient-glow" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-[#00E0E0]/10 blur-[90px]" />
 
-        {/* Deep Vignette Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#011633] via-[#011633]/70 to-[#011633]/90" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#011633]/95 via-[#011633]/40 to-[#011633]/95" />
+        {/* Balanced Vignette Gradient Overlays: Preserves typography contrast while keeping animation vivid */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#011633] via-[#011633]/25 to-[#011633]/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#011633]/70 via-transparent to-[#011633]/70" />
 
         {/* Circular Financial Data Rings */}
         <div className="absolute top-[48%] left-1/2 pointer-events-none">

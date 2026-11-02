@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -93,7 +94,7 @@ export default function FinancialImpactPage() {
   const [activeTab, setActiveTab] = useState<"all" | "confirmed" | "candidates">("confirmed");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   useEffect(() => {
     let ignore = false;

@@ -23,7 +23,8 @@ def is_confirmed_commitment(c: Commitment) -> bool:
     
     Rules:
     - Status must be active or user_confirmed.
-    - Confidence band must be high or medium.
+    - If user explicitly confirmed it, confidence is established.
+    - Confidence band must be high or medium if not user-confirmed.
     - Cadence cannot be irregular or unknown.
     - Status cannot be candidate or review_required.
     """
@@ -31,6 +32,8 @@ def is_confirmed_commitment(c: Commitment) -> bool:
         return False
     if c.status not in CONFIRMED_STATUSES:
         return False
+    if c.status == "user_confirmed" or c.user_decision == "confirmed":
+        return (c.cadence or "").lower() not in ("irregular", "unknown")
     if c.confidence_band not in CONFIRMED_CONFIDENCE_BANDS:
         return False
     if (c.cadence or "").lower() in ("irregular", "unknown"):

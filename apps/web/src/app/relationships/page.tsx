@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import type { Core, NodeSingular, EdgeSingular, EventObject, ElementDefinition, StylesheetStyle, LayoutOptions } from "cytoscape";
@@ -78,7 +79,7 @@ export default function RelationshipExplorerPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeLayout, setActiveLayout] = useState<string>("cose");
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   // Initialize Cytoscape and render elements
   const renderCytoscape = useCallback(

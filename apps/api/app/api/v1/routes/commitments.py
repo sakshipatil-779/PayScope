@@ -431,6 +431,7 @@ def confirm_commitment(
     commitment.user_decision = "confirmed"
     commitment.user_decision_at = now
     commitment.status = "user_confirmed"
+    commitment.confidence_band = "high"
     commitment.updated_at = now
 
     audit = AuditEvent(

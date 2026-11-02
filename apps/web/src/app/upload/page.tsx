@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect, useCallback, useId } from "react";
 
 import AppHeader from "@/components/navigation/AppHeader";
@@ -112,7 +113,7 @@ export default function UploadPage() {
   const [historyItems, setHistoryItems] = useState<ImportHistoryItem[]>([]);
   const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   // Fetch sample files on demand
   const fetchSampleFiles = useCallback(async () => {

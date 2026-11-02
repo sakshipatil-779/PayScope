@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 
@@ -79,7 +80,7 @@ export default function InsightDetailPage({ params }: { params: Promise<{ id: st
   const [dismissReason, setDismissReason] = useState<string>("Intended to continue paid tier");
   const [actionSubmitting, setActionSubmitting] = useState<boolean>(false);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   const refreshDetail = async () => {
     try {

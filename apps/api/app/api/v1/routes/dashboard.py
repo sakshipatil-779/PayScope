@@ -151,7 +151,7 @@ def get_dashboard_summary(
     category_distribution: Dict[str, Decimal] = {}
 
     for c in all_commitments:
-        if c.status in ("active", "confirmed"):
+        if c.status in ("active", "confirmed", "user_confirmed"):
             cat = (c.merchant.category if c.merchant and c.merchant.category else c.commitment_type).capitalize()
             # Calculate monthly cost
             amt = c.representative_amount or Decimal("0.00")

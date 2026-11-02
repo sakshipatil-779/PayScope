@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect, useCallback } from "react";
 
 import AppHeader from "@/components/navigation/AppHeader";
@@ -54,7 +55,7 @@ export default function ManualReviewPage() {
   const [createAlias, setCreateAlias] = useState<boolean>(true);
   const [correctionNotes, setCorrectionNotes] = useState<string>("");
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   // Fetch reviews and merchants
   const fetchReviews = useCallback(async () => {

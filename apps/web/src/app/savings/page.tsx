@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -80,7 +81,7 @@ export default function SavingsPage() {
   const [savingScenario, setSavingScenario] = useState(false);
   const [saveSuccessMessage, setSaveSuccessMessage] = useState<string | null>(null);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   // 1. Initial Load of Opportunities & Saved Scenarios
   useEffect(() => {

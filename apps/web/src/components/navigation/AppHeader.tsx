@@ -15,8 +15,8 @@ export function AppHeader({ apiConnected = true }: AppHeaderProps) {
   return (
     <>
       <header className="border-b border-[#164B68] bg-[#031B38]/90 backdrop-blur-md sticky top-0 z-40 transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* LEFT SIDE: [Hamburger Menu] [PayScope Logo + Wordmark] */}
+        <div className="w-full px-4 sm:px-6 h-16 flex items-center justify-between">
+          {/* LEFT SIDE: [Hamburger Menu] [PayScope Logo + Wordmark at EXTREME TOP-LEFT] */}
           <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => setDrawerOpen(true)}

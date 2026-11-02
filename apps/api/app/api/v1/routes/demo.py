@@ -1,9 +1,11 @@
 """Demo data and sample file download endpoints."""
 from pathlib import Path
 from typing import Any, Dict, List
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+from app.db.session import get_db
 from app.generators.config import GeneratorConfig
 from app.generators.dataset_generator import DatasetGenerator
 from app.generators.export_generator import export_dataset
@@ -120,4 +122,82 @@ def generate_sample_data(req: GenerateRequest) -> Dict[str, Any]:
         "manifest": dataset["manifest"],
         "files_generated": [p.name for p in exported.values()],
     }
+
+
+@router.post("/seed", status_code=status.HTTP_200_OK)
+def seed_demo_workspace(db: Session = Depends(get_db)) -> Dict[str, Any]:
+    """Idempotently seed canonical merchants, synthetic bank transactions, recurring commitments, and insights."""
+    from datetime import datetime, timezone
+    from app.matching.seed_merchants import seed_canonical_merchants
+    from app.ingestion.import_service import ImportService
+    from app.analytics.commitment_detector import CommitmentDetector
+    from app.analytics.insights import run_insight_detection
+    from app.matching.reprocessor import TransactionReprocessor
+    from app.repositories.user_repository import UserRepository
+    from app.models.transaction import Transaction
+    from app.models.commitment import Commitment
+
+    # 1. Seed canonical merchants
+    merchant_stats = seed_canonical_merchants(db)
+
+    # 2. Get or create demo user
+    user = UserRepository.get_or_create_demo_user(db)
+
+    # 3. Check if transactions exist; if not, import sample CSV
+    tx_count = db.query(Transaction).filter(Transaction.user_id == user.id).count()
+    imported_rows = 0
+    if tx_count == 0:
+        sample_dir = _get_sample_data_dir()
+        csv_file = sample_dir / "synthetic_bank_statement.csv"
+        if not csv_file.exists():
+            config = GeneratorConfig(seed=42)
+            dataset = DatasetGenerator(config).generate()
+            export_dataset(dataset, sample_dir)
+        with open(csv_file, "rb") as f:
+            content = f.read()
+        res = ImportService.execute_import(
+            db=db,
+            user_id=user.id,
+            filename="synthetic_bank_statement.csv",
+            content=content,
+            import_type="statement",
+            synthetic_confirmed=True,
+        )
+        imported_rows = res.get("accepted_count", 0)
+
+    # 4. Reprocess any transactions with unassigned merchants
+    reprocess_report = TransactionReprocessor.reprocess(db, user_id=user.id)
+
+    # 5. Discover commitments
+    detector = CommitmentDetector(db)
+    discovery = detector.discover_user_commitments(user.id)
+
+    # 6. Confirm representative commitments for demo
+    commitments = db.query(Commitment).filter(Commitment.user_id == user.id).all()
+    confirmed_count = 0
+    now = datetime.now(timezone.utc)
+    for c in commitments:
+        if c.cadence in ("monthly", "annual", "quarterly", "weekly"):
+            c.status = "user_confirmed"
+            c.user_decision = "confirmed"
+            c.confidence_band = "high"
+            c.user_decision_at = now
+            c.updated_at = now
+            confirmed_count += 1
+
+    db.commit()
+
+    # 7. Run insight detection
+    insights_summary = run_insight_detection(db, user.id)
+
+    return {
+        "success": True,
+        "merchants": merchant_stats,
+        "transactions_imported": imported_rows,
+        "reprocessed": reprocess_report,
+        "total_discovered": discovery.total_discovered,
+        "commitments_confirmed": confirmed_count,
+        "insights_detected": insights_summary.total_detected if hasattr(insights_summary, "total_detected") else 0,
+    }
+
 

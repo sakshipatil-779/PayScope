@@ -1,5 +1,6 @@
 "use client";
 
+import { getApiBaseUrl } from "@/lib/api";
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -74,7 +75,7 @@ function CancellationCentreContent() {
   const [userNotes, setUserNotes] = useState<string>("");
   const [creatingCase, setCreatingCase] = useState(false);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiBase = getApiBaseUrl();
 
   useEffect(() => {
     let ignore = false;

@@ -21,8 +21,8 @@ export function PayScopeLandingHeader({
   return (
     <>
       <header className="relative z-40 border-b border-[#164B68]/60 bg-[#011633]/85 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* LEFT SIDE: [Hamburger Menu] [PayScope Logo + Wordmark at TOP-LEFT] */}
+        <div className="w-full px-4 sm:px-6 h-16 flex items-center justify-between">
+          {/* LEFT SIDE: [Hamburger Menu] [PayScope Logo + Wordmark at EXTREME TOP-LEFT] */}
           <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => setDrawerOpen(true)}
