@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
+import AppHeader from "@/components/navigation/AppHeader";
+
 interface InsightItem {
   id: string;
   user_id: string;
@@ -192,7 +194,7 @@ export default function InsightsPage() {
         );
       default:
         return (
-          <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+          <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-[#0B3152] text-[#A9BBCD] border border-[#164B68]">
             {sev}
           </span>
         );
@@ -221,7 +223,7 @@ export default function InsightsPage() {
         );
       case "dismissed":
         return (
-          <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+          <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-[#0B3152] text-[#A9BBCD] border border-[#164B68]">
             Dismissed
           </span>
         );
@@ -260,50 +262,14 @@ export default function InsightsPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-[#011633] text-[#F4F7FB] antialiased selection:bg-[#F08A00] selection:text-white">
       {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-lg shadow-sm group-hover:border-emerald-500 transition-colors">
-                M
-              </div>
-              <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-emerald-400">Lens</span>
-              </span>
-            </Link>
-            <span className="text-slate-600">/</span>
-            <span className="text-sm font-medium text-slate-300">Anomaly Intelligence & Insights</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/commitments"
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
-            >
-              Commitments
-            </Link>
-            <Link
-              href="/merchants"
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
-            >
-              Merchants
-            </Link>
-            <Link
-              href="/merchant-review"
-              className="text-xs px-3 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition-colors font-medium"
-            >
-              Review Queue
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
         {/* Page Banner & Action */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-slate-900/80 via-slate-900 to-indigo-950/30 border border-slate-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-r from-slate-900/80 via-slate-900 to-indigo-950/30 border border-[#164B68]/80">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
               Anomaly Intelligence Centre
@@ -311,7 +277,7 @@ export default function InsightsPage() {
                 Phase 6 Engine
               </span>
             </h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-[#A9BBCD]">
               Deterministic detection of silent price increases, free trial conversions, unused memberships, and post-cancellation charges.
             </p>
           </div>
@@ -361,48 +327,48 @@ export default function InsightsPage() {
         {/* Summary Metric Cards */}
         {summary && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-              <div className="text-xs font-medium text-slate-400">Total Open</div>
+            <div className="p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
+              <div className="text-xs font-medium text-[#A9BBCD]">Total Open</div>
               <div className="mt-1 text-2xl font-bold text-white">{summary.total_open}</div>
-              <div className="mt-1 text-[11px] text-slate-500">{summary.high_severity} high priority</div>
+              <div className="mt-1 text-[11px] text-[#A9BBCD]">{summary.high_severity} high priority</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div className="p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
               <div className="text-xs font-medium text-amber-400">Price Hikes</div>
               <div className="mt-1 text-2xl font-bold text-amber-300">{summary.price_increases}</div>
-              <div className="mt-1 text-[11px] text-slate-500">Sustained increases</div>
+              <div className="mt-1 text-[11px] text-[#A9BBCD]">Sustained increases</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div className="p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
               <div className="text-xs font-medium text-sky-400">Trial Conversions</div>
               <div className="mt-1 text-2xl font-bold text-sky-300">{summary.trial_conversions}</div>
-              <div className="mt-1 text-[11px] text-slate-500">Free to paid transitions</div>
+              <div className="mt-1 text-[11px] text-[#A9BBCD]">Free to paid transitions</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div className="p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
               <div className="text-xs font-medium text-indigo-400">Potentially Unused</div>
               <div className="mt-1 text-2xl font-bold text-indigo-300">{summary.potentially_unused}</div>
-              <div className="mt-1 text-[11px] text-slate-500">90+ days 0 activity</div>
+              <div className="mt-1 text-[11px] text-[#A9BBCD]">90+ days 0 activity</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div className="p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
               <div className="text-xs font-medium text-rose-400">Post-Cancellation</div>
               <div className="mt-1 text-2xl font-bold text-rose-300">{summary.post_cancellation_charges}</div>
-              <div className="mt-1 text-[11px] text-slate-500">Debited after cancel</div>
+              <div className="mt-1 text-[11px] text-[#A9BBCD]">Debited after cancel</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div className="p-4 rounded-xl bg-[#082746]/60 border border-[#164B68]">
               <div className="text-xs font-medium text-emerald-400">Monthly Impact</div>
               <div className="mt-1 text-2xl font-bold text-emerald-300">
                 ₹{Number(summary.estimated_monthly_impact).toLocaleString("en-IN", { minimumFractionDigits: 0 })}
               </div>
-              <div className="mt-1 text-[11px] text-slate-500">Recoverable / monthly</div>
+              <div className="mt-1 text-[11px] text-[#A9BBCD]">Recoverable / monthly</div>
             </div>
           </div>
         )}
 
         {/* Filter Navigation Tabs */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#164B68] pb-4">
           <div className="flex flex-wrap items-center gap-1.5">
             {[
               { id: "all", label: "All Insights" },
@@ -418,7 +384,7 @@ export default function InsightsPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   activeTab === tab.id
                     ? "bg-indigo-600 text-white"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                    : "text-[#A9BBCD] hover:text-[#F4F7FB] hover:bg-[#082746]"
                 }`}
               >
                 {tab.label}
@@ -432,13 +398,13 @@ export default function InsightsPage() {
               placeholder="Search anomalies..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-3 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-44"
+              className="px-3 py-1.5 text-xs rounded-lg bg-[#082746] border border-[#164B68] text-[#F4F7FB] placeholder-[#A9BBCD]/60 focus:outline-none focus:border-indigo-500 w-44"
             />
 
             <select
               value={severityFilter}
               onChange={(e) => setSeverityFilter(e.target.value)}
-              className="px-3 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-slate-300 focus:outline-none focus:border-indigo-500"
+              className="px-3 py-1.5 text-xs rounded-lg bg-[#082746] border border-[#164B68] text-[#F4F7FB] focus:outline-none focus:border-indigo-500"
             >
               <option value="">All Severities</option>
               <option value="high">High</option>
@@ -449,7 +415,7 @@ export default function InsightsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-slate-300 focus:outline-none focus:border-indigo-500"
+              className="px-3 py-1.5 text-xs rounded-lg bg-[#082746] border border-[#164B68] text-[#F4F7FB] focus:outline-none focus:border-indigo-500"
             >
               <option value="">All Statuses</option>
               <option value="open">Open</option>
@@ -462,11 +428,11 @@ export default function InsightsPage() {
 
         {/* Insight Cards Grid */}
         {loading ? (
-          <div className="p-12 text-center text-slate-500 text-sm">Loading intelligence insights...</div>
+          <div className="p-12 text-center text-[#A9BBCD] text-sm">Loading intelligence insights...</div>
         ) : filteredInsights.length === 0 ? (
-          <div className="p-12 text-center border border-dashed border-slate-800 rounded-2xl bg-slate-900/30">
-            <h3 className="text-base font-semibold text-slate-300">No Insights Match Filters</h3>
-            <p className="mt-1 text-xs text-slate-500">
+          <div className="p-12 text-center border border-dashed border-[#164B68] rounded-2xl bg-[#082746]/30">
+            <h3 className="text-base font-semibold text-[#F4F7FB]">No Insights Match Filters</h3>
+            <p className="mt-1 text-xs text-[#A9BBCD]">
               Run detection or adjust filter criteria to inspect subscription anomalies.
             </p>
           </div>
@@ -475,25 +441,25 @@ export default function InsightsPage() {
             {filteredInsights.map((ins) => (
               <div
                 key={ins.id}
-                className={`p-5 rounded-2xl bg-slate-900/70 border transition-all flex flex-col justify-between gap-4 ${
+                className={`p-5 rounded-2xl bg-[#082746]/70 border transition-all flex flex-col justify-between gap-4 ${
                   ins.severity === "high"
                     ? "border-rose-500/30 hover:border-rose-500/50"
                     : ins.severity === "medium"
                     ? "border-amber-500/30 hover:border-amber-500/50"
-                    : "border-slate-800 hover:border-slate-700"
+                    : "border-[#164B68] hover:border-[#164B68]"
                 }`}
               >
                 <div className="flex flex-col gap-2.5">
                   {/* Card Header */}
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold tracking-wider uppercase text-slate-400">
+                      <span className="text-[11px] font-semibold tracking-wider uppercase text-[#A9BBCD]">
                         {getTypeLabel(ins.insight_type)}
                       </span>
                       {getSeverityBadge(ins.severity)}
                       {getStatusBadge(ins.status)}
                     </div>
-                    <span className="text-[11px] text-slate-500 font-mono">
+                    <span className="text-[11px] text-[#A9BBCD] font-mono">
                       {new Date(ins.detected_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
                     </span>
                   </div>
@@ -501,23 +467,23 @@ export default function InsightsPage() {
                   {/* Title & Commitment */}
                   <div>
                     <h3 className="text-base font-semibold text-white tracking-tight">{ins.title}</h3>
-                    <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                    <div className="text-xs text-[#A9BBCD] flex items-center gap-2 mt-0.5">
                       <span className="text-emerald-400 font-medium">{ins.commitment_name}</span>
-                      {ins.merchant_name && <span className="text-slate-500">• {ins.merchant_name}</span>}
+                      {ins.merchant_name && <span className="text-[#A9BBCD]">• {ins.merchant_name}</span>}
                     </div>
                   </div>
 
                   {/* Summary */}
-                  <p className="text-xs text-slate-300 leading-relaxed">{ins.summary}</p>
+                  <p className="text-xs text-[#F4F7FB] leading-relaxed">{ins.summary}</p>
                 </div>
 
                 {/* Footer Controls & Quick Actions */}
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <span className="px-2 py-0.5 rounded bg-slate-800 text-[11px] text-slate-300">
+                <div className="pt-3 border-t border-[#164B68]/80 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-xs text-[#A9BBCD]">
+                    <span className="px-2 py-0.5 rounded bg-[#0B3152] text-[11px] text-[#F4F7FB]">
                       {ins.evidence_count} evidence items
                     </span>
-                    <span className="text-[11px] text-slate-500">{ins.confidence_band} confidence</span>
+                    <span className="text-[11px] text-[#A9BBCD]">{ins.confidence_band} confidence</span>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -525,13 +491,13 @@ export default function InsightsPage() {
                       <>
                         <button
                           onClick={() => handleAcknowledge(ins.id)}
-                          className="text-xs px-2.5 py-1 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
+                          className="text-xs px-2.5 py-1 rounded-lg border border-[#164B68] bg-[#0B3152] text-[#F4F7FB] hover:text-white hover:bg-[#0B3152] transition-colors cursor-pointer"
                         >
                           Acknowledge
                         </button>
                         <button
                           onClick={() => handleDismiss(ins.id)}
-                          className="text-xs px-2.5 py-1 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                          className="text-xs px-2.5 py-1 rounded-lg border border-[#164B68] bg-[#082746] text-[#A9BBCD] hover:text-[#F4F7FB] transition-colors cursor-pointer"
                         >
                           Dismiss
                         </button>

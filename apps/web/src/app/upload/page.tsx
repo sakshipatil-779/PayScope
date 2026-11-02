@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useId } from "react";
-import Link from "next/link";
+
+import AppHeader from "@/components/navigation/AppHeader";
 
 interface SampleFile {
   filename: string;
@@ -274,61 +275,9 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-[#011633] text-[#F4F7FB] antialiased selection:bg-[#F08A00] selection:text-white">
       {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-lg shadow-sm group-hover:border-emerald-500 transition-colors">
-                M
-              </div>
-              <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-emerald-400">Lens</span>
-              </span>
-            </Link>
-            <span className="text-slate-600">/</span>
-            <span className="text-sm font-medium text-slate-300">Upload Centre</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/insights"
-              className="text-xs px-3 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition-colors font-medium"
-            >
-              Insights
-            </Link>
-            <Link
-              href="/commitments"
-              className="text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 transition-colors font-semibold"
-            >
-              Commitments
-            </Link>
-            <Link
-              href="/merchants"
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
-            >
-              Merchants
-            </Link>
-            <Link
-              href="/merchant-review"
-              className="text-xs px-3 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition-colors"
-            >
-              Review Queue
-            </Link>
-            <Link
-              href="/"
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
-            >
-              Home
-            </Link>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              Synthetic Prototype Mode
-            </span>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* Main Container */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
@@ -337,8 +286,8 @@ export default function UploadPage() {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Upload Centre & Ingestion Pipeline
           </h1>
-          <p className="mt-1 text-sm sm:text-base text-slate-400">
-            Ingest synthetic bank statements (CSV, XLSX) or simulated payment notifications (JSON) to feed the MandateLens recurring intelligence engine.
+          <p className="mt-1 text-sm sm:text-base text-[#A9BBCD]">
+            Ingest synthetic bank statements (CSV, XLSX) or simulated payment notifications (JSON) to feed the PayScope recurring intelligence engine.
           </p>
         </div>
 
@@ -355,7 +304,7 @@ export default function UploadPage() {
                 Prototype Constraint: Strict Synthetic Data Enforcement
               </h3>
               <p className="text-xs text-amber-200/80 leading-relaxed">
-                MandateLens is a developmental prototype designed for research and testing. It operates solely on synthetic or anonymised test fixtures. <strong>Do NOT upload real bank statements, real credit card bills, or actual financial records containing personally identifiable data.</strong>
+                PayScope is a recurring payment intelligence platform designed for research and testing. It operates solely on synthetic or anonymised test fixtures. <strong>Do NOT upload real bank statements, real credit card bills, or actual financial records containing personally identifiable data.</strong>
               </p>
             </div>
           </div>
@@ -370,29 +319,29 @@ export default function UploadPage() {
                   handleGeneratePreview(selectedFile, importType);
                 }
               }}
-              className="w-4 h-4 rounded border-amber-500/50 bg-slate-950 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-950 cursor-pointer"
+              className="w-4 h-4 rounded border-amber-500/50 bg-[#011633] text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-950 cursor-pointer"
             />
-            <span className="text-xs sm:text-sm font-medium text-slate-200">
+            <span className="text-xs sm:text-sm font-medium text-[#F4F7FB]">
               I explicitly confirm that this file contains <span className="text-amber-300 font-semibold">ONLY synthetic demo data</span> and no real personal financial records.
             </span>
           </label>
         </section>
 
         {/* SECTION B: Sample Dataset Downloads */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col gap-4">
+        <section className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h2 className="text-base font-semibold text-white flex items-center gap-2">
                 Download Synthetic Demo Files
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#A9BBCD]">
                 Ready-to-use synthetic test files containing 12 distinct recurring payment scenarios and 80+ records.
               </p>
             </div>
             <button
               onClick={fetchSampleFiles}
               disabled={loadingSamples}
-              className="text-xs px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-750 transition-colors w-fit"
+              className="text-xs px-2.5 py-1 rounded bg-[#0B3152] border border-[#164B68] text-[#F4F7FB] hover:bg-slate-750 transition-colors w-fit"
             >
               {loadingSamples ? "Refreshing..." : "Check Status"}
             </button>
@@ -404,25 +353,25 @@ export default function UploadPage() {
                 key={sf.filename}
                 href={`${apiBase}${sf.download_url}`}
                 download
-                className="group p-4 rounded-lg border border-slate-800 bg-slate-950/70 hover:border-emerald-500/50 hover:bg-slate-900/80 transition-all flex flex-col justify-between gap-3"
+                className="group p-4 rounded-lg border border-[#164B68] bg-[#011633]/70 hover:border-emerald-500/50 hover:bg-[#082746]/80 transition-all flex flex-col justify-between gap-3"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
                       {sf.format}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">
+                    <span className="text-xs text-[#A9BBCD] font-mono">
                       {sf.size_bytes ? `${Math.round(sf.size_bytes / 1024)} KB` : "Ready"}
                     </span>
                   </div>
                   <h4 className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors break-all">
                     {sf.filename}
                   </h4>
-                  <p className="text-[11px] text-slate-400 line-clamp-2">
+                  <p className="text-[11px] text-[#A9BBCD] line-clamp-2">
                     {sf.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium pt-2 border-t border-slate-800/80">
+                <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium pt-2 border-t border-[#164B68]/80">
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
@@ -436,14 +385,14 @@ export default function UploadPage() {
         {/* SECTION C & D: Import Configuration & Drag/Drop Upload */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column: Import Type & Settings */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col gap-5">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+          <div className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col gap-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-[#A9BBCD]">
               1. Import Specification
             </h3>
 
             {/* Type selector */}
             <div className="space-y-2">
-              <label className="text-xs font-medium text-slate-300">File Ingestion Category</label>
+              <label className="text-xs font-medium text-[#F4F7FB]">File Ingestion Category</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
@@ -454,11 +403,11 @@ export default function UploadPage() {
                   className={`p-3 rounded-lg border text-left flex flex-col gap-1 transition-all ${
                     importType === "statement"
                       ? "border-emerald-500 bg-emerald-500/10 text-white"
-                      : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+                      : "border-[#164B68] bg-[#011633]/60 text-[#A9BBCD] hover:border-[#164B68]"
                   }`}
                 >
                   <span className="text-xs font-semibold">Bank Statement</span>
-                  <span className="text-[11px] text-slate-400">CSV or Excel (XLSX)</span>
+                  <span className="text-[11px] text-[#A9BBCD]">CSV or Excel (XLSX)</span>
                 </button>
 
                 <button
@@ -470,24 +419,24 @@ export default function UploadPage() {
                   className={`p-3 rounded-lg border text-left flex flex-col gap-1 transition-all ${
                     importType === "notifications"
                       ? "border-emerald-500 bg-emerald-500/10 text-white"
-                      : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+                      : "border-[#164B68] bg-[#011633]/60 text-[#A9BBCD] hover:border-[#164B68]"
                   }`}
                 >
                   <span className="text-xs font-semibold">Notifications</span>
-                  <span className="text-[11px] text-slate-400">JSON payload</span>
+                  <span className="text-[11px] text-[#A9BBCD]">JSON payload</span>
                 </button>
               </div>
             </div>
 
             {/* File guidelines info */}
-            <div className="rounded-lg bg-slate-950/80 border border-slate-800/80 p-3 text-xs text-slate-400 space-y-2">
+            <div className="rounded-lg bg-[#011633]/80 border border-[#164B68]/80 p-3 text-xs text-[#A9BBCD] space-y-2">
               <div className="flex justify-between">
                 <span>Maximum File Size:</span>
-                <span className="text-slate-200 font-mono">10 MB</span>
+                <span className="text-[#F4F7FB] font-mono">10 MB</span>
               </div>
               <div className="flex justify-between">
                 <span>Accepted Formats:</span>
-                <span className="text-slate-200 font-mono">.csv, .xlsx, .json</span>
+                <span className="text-[#F4F7FB] font-mono">.csv, .xlsx, .json</span>
               </div>
               <div className="flex justify-between">
                 <span>Idempotency Check:</span>
@@ -497,8 +446,8 @@ export default function UploadPage() {
           </div>
 
           {/* Right 2 Columns: File Dropzone */}
-          <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col justify-between gap-5">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+          <div className="lg:col-span-2 rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col justify-between gap-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-[#A9BBCD]">
               2. Select or Drop File
             </h3>
 
@@ -519,11 +468,11 @@ export default function UploadPage() {
                 isDragging
                   ? "border-emerald-500 bg-emerald-500/5"
                   : selectedFile
-                  ? "border-emerald-500/50 bg-slate-950/60"
-                  : "border-slate-800 hover:border-slate-700 bg-slate-950/40"
+                  ? "border-emerald-500/50 bg-[#011633]/60"
+                  : "border-[#164B68] hover:border-[#164B68] bg-[#011633]/40"
               }`}
             >
-              <div className="w-12 h-12 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-400">
+              <div className="w-12 h-12 rounded-full bg-[#0B3152]/80 flex items-center justify-center text-[#A9BBCD]">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
@@ -534,7 +483,7 @@ export default function UploadPage() {
                   <p className="text-sm font-semibold text-white break-all">
                     {selectedFile.name}
                   </p>
-                  <p className="text-xs text-slate-400 font-mono">
+                  <p className="text-xs text-[#A9BBCD] font-mono">
                     {(selectedFile.size / 1024).toFixed(1)} KB — {selectedFile.type || "unknown mime"}
                   </p>
                   <button
@@ -550,7 +499,7 @@ export default function UploadPage() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <p className="text-sm text-slate-300">
+                  <p className="text-sm text-[#F4F7FB]">
                     Drag and drop your statement or notification file here, or browse
                   </p>
                   <label
@@ -570,7 +519,7 @@ export default function UploadPage() {
                     }}
                     className="hidden"
                   />
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-[#A9BBCD]">
                     Supports CSV, XLSX, and JSON up to 10 MB.
                   </p>
                 </div>
@@ -601,20 +550,20 @@ export default function UploadPage() {
 
         {/* SECTION E: Ingestion Preview & Column Mapping */}
         {previewData && (
-          <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <section className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#164B68] pb-4">
               <div>
                 <h3 className="text-base font-semibold text-white">
                   3. Ingestion Preview & Validation Summary
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#A9BBCD]">
                   Review detected columns, duplicates, and validated rows before committing to PostgreSQL.
                 </p>
               </div>
 
               {/* Validation Summary Badges */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-md bg-slate-800 text-slate-300 text-xs font-medium border border-slate-700">
+                <span className="px-3 py-1 rounded-md bg-[#0B3152] text-[#F4F7FB] text-xs font-medium border border-[#164B68]">
                   Total Rows: <strong className="text-white">{previewData.total_rows}</strong>
                 </span>
                 <span className="px-3 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-medium border border-emerald-500/20">
@@ -635,15 +584,15 @@ export default function UploadPage() {
 
             {/* Column Mapping Section (for statements) */}
             {previewData.import_type === "statement" && previewData.mapping && previewData.available_targets && (
-              <div className="rounded-lg bg-slate-950/70 border border-slate-800 p-4 space-y-3">
+              <div className="rounded-lg bg-[#011633]/70 border border-[#164B68] p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#F4F7FB]">
                     Column Mapping Adjustment
                   </h4>
                   <button
                     onClick={handleApplyMapping}
                     disabled={loadingPreview}
-                    className="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                    className="text-xs px-2.5 py-1 rounded bg-[#0B3152] hover:bg-[#0B3152] text-[#F4F7FB] transition-colors"
                   >
                     Re-evaluate Mapping
                   </button>
@@ -652,7 +601,7 @@ export default function UploadPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {previewData.available_targets.map((target) => (
                     <div key={target} className="space-y-1">
-                      <label className="text-[11px] font-mono text-slate-400 block">
+                      <label className="text-[11px] font-mono text-[#A9BBCD] block">
                         {target} {["transaction_date", "raw_descriptor", "amount"].includes(target) && <span className="text-rose-400">*</span>}
                       </label>
                       <select
@@ -663,7 +612,7 @@ export default function UploadPage() {
                             [target]: e.target.value,
                           });
                         }}
-                        className="w-full text-xs rounded border border-slate-800 bg-slate-900 text-slate-200 px-2 py-1.5 focus:border-emerald-500 focus:outline-none font-mono"
+                        className="w-full text-xs rounded border border-[#164B68] bg-[#082746] text-[#F4F7FB] px-2 py-1.5 focus:border-emerald-500 focus:outline-none font-mono"
                       >
                         <option value="">(Not mapped / default)</option>
                         {previewData.headers.map((h) => (
@@ -698,12 +647,12 @@ export default function UploadPage() {
 
             {/* Preview Data Table */}
             <div className="space-y-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#A9BBCD]">
                 Sample Record Preview (First {previewData.preview_rows.length} rows)
               </h4>
-              <div className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950">
+              <div className="overflow-x-auto rounded-lg border border-[#164B68] bg-[#011633]">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-mono">
+                  <thead className="bg-[#082746] border-b border-[#164B68] text-[#A9BBCD] font-mono">
                     <tr>
                       <th className="px-3 py-2">Status</th>
                       <th className="px-3 py-2">Date / Time</th>
@@ -728,24 +677,24 @@ export default function UploadPage() {
                             </span>
                           )}
                         </td>
-                        <td className="px-3 py-2 font-mono text-slate-300">
+                        <td className="px-3 py-2 font-mono text-[#F4F7FB]">
                           {row.date || row.timestamp?.slice(0, 10)}
                         </td>
-                        <td className="px-3 py-2 text-slate-200 max-w-xs truncate">
+                        <td className="px-3 py-2 text-[#F4F7FB] max-w-xs truncate">
                           {row.descriptor || `${row.event_type} (${row.merchant_hint || ""})`}
                         </td>
-                        <td className="px-3 py-2 font-mono text-slate-200">
+                        <td className="px-3 py-2 font-mono text-[#F4F7FB]">
                           {row.amount !== null && row.amount !== undefined
                             ? `${row.currency || "INR"} ${row.amount.toFixed(2)}`
                             : "—"}
                         </td>
-                        <td className="px-3 py-2 text-slate-400">
+                        <td className="px-3 py-2 text-[#A9BBCD]">
                           {row.channel || row.mechanism || "—"}
                         </td>
-                        <td className="px-3 py-2 font-mono text-slate-400 text-[11px] truncate max-w-[120px]">
+                        <td className="px-3 py-2 font-mono text-[#A9BBCD] text-[11px] truncate max-w-[120px]">
                           {row.reference || row.mandate_ref || "—"}
                         </td>
-                        <td className="px-3 py-2 font-mono text-slate-500 text-[10px]">
+                        <td className="px-3 py-2 font-mono text-[#A9BBCD] text-[10px]">
                           {row.external_id || "—"}
                         </td>
                       </tr>
@@ -756,8 +705,8 @@ export default function UploadPage() {
             </div>
 
             {/* SECTION F: Confirm Import Button */}
-            <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-xs text-slate-400">
+            <div className="pt-4 border-t border-[#164B68] flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-xs text-[#A9BBCD]">
                 {previewData.valid_count > 0 ? (
                   <span>
                     Ready to persist <strong className="text-emerald-400">{previewData.valid_count}</strong> records to PostgreSQL.
@@ -807,7 +756,7 @@ export default function UploadPage() {
                   <h3 className="text-sm font-semibold text-white">
                     Import Succeeded
                   </h3>
-                  <p className="text-xs text-slate-400 font-mono">
+                  <p className="text-xs text-[#A9BBCD] font-mono">
                     Import ID: {importResult.import_id}
                   </p>
                 </div>
@@ -818,19 +767,19 @@ export default function UploadPage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="rounded bg-slate-900/80 p-3 border border-slate-800">
-                <span className="text-[11px] text-slate-400 block">Total Rows</span>
+              <div className="rounded bg-[#082746]/80 p-3 border border-[#164B68]">
+                <span className="text-[11px] text-[#A9BBCD] block">Total Rows</span>
                 <span className="text-lg font-bold text-white font-mono">{importResult.total_rows}</span>
               </div>
-              <div className="rounded bg-slate-900/80 p-3 border border-slate-800">
+              <div className="rounded bg-[#082746]/80 p-3 border border-[#164B68]">
                 <span className="text-[11px] text-emerald-400 block">Accepted & Saved</span>
                 <span className="text-lg font-bold text-emerald-400 font-mono">{importResult.accepted_count}</span>
               </div>
-              <div className="rounded bg-slate-900/80 p-3 border border-slate-800">
+              <div className="rounded bg-[#082746]/80 p-3 border border-[#164B68]">
                 <span className="text-[11px] text-amber-400 block">Duplicates Skipped</span>
                 <span className="text-lg font-bold text-amber-400 font-mono">{importResult.duplicate_count}</span>
               </div>
-              <div className="rounded bg-slate-900/80 p-3 border border-slate-800">
+              <div className="rounded bg-[#082746]/80 p-3 border border-[#164B68]">
                 <span className="text-[11px] text-rose-400 block">Rejected Errors</span>
                 <span className="text-lg font-bold text-rose-400 font-mono">{importResult.rejected_count}</span>
               </div>
@@ -839,33 +788,33 @@ export default function UploadPage() {
         )}
 
         {/* SECTION H: Import History */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col gap-4">
+        <section className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-semibold text-white">
                 Import History & Ingestion Log
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#A9BBCD]">
                 Past uploads recorded in PostgreSQL with audit status and row breakdown.
               </p>
             </div>
             <button
               onClick={fetchHistory}
               disabled={loadingHistory}
-              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+              className="text-xs px-3 py-1.5 rounded-lg bg-[#0B3152] hover:bg-[#0B3152] text-[#F4F7FB] transition-colors"
             >
               {loadingHistory ? "Refreshing..." : "Refresh History"}
             </button>
           </div>
 
           {historyItems.length === 0 ? (
-            <div className="py-8 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-lg">
+            <div className="py-8 text-center text-xs text-[#A9BBCD] border border-dashed border-[#164B68] rounded-lg">
               No previous imports found in this workspace. Upload a synthetic statement above to populate.
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950">
+            <div className="overflow-x-auto rounded-lg border border-[#164B68] bg-[#011633]">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-mono">
+                <thead className="bg-[#082746] border-b border-[#164B68] text-[#A9BBCD] font-mono">
                   <tr>
                     <th className="px-3 py-2">Timestamp</th>
                     <th className="px-3 py-2">Filename</th>
@@ -878,14 +827,14 @@ export default function UploadPage() {
                 </thead>
                 <tbody className="divide-y divide-slate-850 font-mono">
                   {historyItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-900/50 transition-colors">
-                      <td className="px-3 py-2 text-slate-400">
+                    <tr key={item.id} className="hover:bg-[#082746]/50 transition-colors">
+                      <td className="px-3 py-2 text-[#A9BBCD]">
                         {item.created_at ? new Date(item.created_at).toLocaleString() : "—"}
                       </td>
                       <td className="px-3 py-2 text-white font-sans font-medium">
                         {item.filename}
                       </td>
-                      <td className="px-3 py-2 text-slate-400 font-sans">
+                      <td className="px-3 py-2 text-[#A9BBCD] font-sans">
                         {item.source_label}
                       </td>
                       <td className="px-3 py-2">
@@ -920,8 +869,8 @@ export default function UploadPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-6 text-center text-xs text-slate-500">
-        MandateLens Prototype — Synthetic financial data only. No real banking connectivity.
+      <footer className="border-t border-slate-900 bg-[#011633]/80 py-6 text-center text-xs text-[#A9BBCD]">
+        PayScope Prototype — Synthetic financial data only. No real banking connectivity.
       </footer>
     </div>
   );

@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
-import PayScopeLogo from "@/components/brand/PayScopeLogo";
+
+import AppHeader from "@/components/navigation/AppHeader";
 
 interface PlaybookStep {
   id: string;
@@ -172,30 +173,7 @@ export default function CancellationCaseDetailPage({
   return (
     <div className="min-h-screen flex flex-col bg-[#011633] text-[#F4F7FB] selection:bg-[#F08A00] selection:text-white">
       {/* Top Navbar */}
-      <header className="border-b border-[#164B68] bg-[#031B38]/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="hover:opacity-90 transition-opacity">
-              <PayScopeLogo variant="navbar" />
-            </Link>
-            <span className="text-[#164B68]">/</span>
-            <Link href="/cancellations" className="text-sm font-medium text-[#A9BBCD] hover:text-white transition-colors">
-              Cancellation Centre
-            </Link>
-            <span className="text-[#164B68]">/</span>
-            <span className="text-sm font-semibold text-[#FFA52B] truncate max-w-xs">{caseDetail.commitment_name}</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/commitments/${caseDetail.commitment_id}`}
-              className="px-3 py-1.5 rounded-lg border border-[#164B68] bg-[#082746] text-[#A9BBCD] hover:text-white text-xs font-medium transition-colors"
-            >
-              View Commitment
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* Main Body */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">

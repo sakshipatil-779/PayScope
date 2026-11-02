@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { PayScopeLogo } from "@/components/brand/PayScopeLogo";
+import PayScopeDrawer from "@/components/navigation/PayScopeDrawer";
 
 interface PayScopeLandingHeaderProps {
   apiConnected?: boolean;
@@ -15,95 +16,62 @@ export function PayScopeLandingHeader({
   headerLogoRef,
   showFinalLogo = true,
 }: PayScopeLandingHeaderProps) {
-  return (
-    <header className="relative z-40 border-b border-[#164B68]/60 bg-[#011633]/85 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Left Section: Navigation Links & Platform Quick Access */}
-        <div className="flex items-center gap-4">
-          <nav className="hidden lg:flex items-center gap-1.5 text-xs font-medium">
-            <Link
-              href="/dashboard"
-              className="px-3 py-1.5 rounded-lg border border-[#F08A00]/40 bg-[#F08A00]/15 text-[#FFA52B] hover:bg-[#F08A00]/25 transition-all font-semibold shadow-[0_0_12px_rgba(240,138,0,0.15)]"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/financial-impact"
-              className="px-3 py-1.5 rounded-lg border border-[#00B8C7]/30 bg-[#00B8C7]/10 text-[#00E0E0] hover:bg-[#00B8C7]/20 transition-all font-semibold shadow-[0_0_12px_rgba(0,184,199,0.15)]"
-            >
-              Financial Impact
-            </Link>
-            <Link
-              href="/savings"
-              className="px-3 py-1.5 rounded-lg border border-[#00B8C7]/30 bg-[#00B8C7]/10 text-[#00E0E0] hover:bg-[#00B8C7]/20 transition-all font-semibold"
-            >
-              Savings
-            </Link>
-            <Link
-              href="/commitments"
-              className="px-3 py-1.5 rounded-lg text-[#A9BBCD] hover:text-white hover:bg-[#082746]/60 transition-colors"
-            >
-              Commitments
-            </Link>
-            <Link
-              href="/insights"
-              className="px-3 py-1.5 rounded-lg text-[#A9BBCD] hover:text-white hover:bg-[#082746]/60 transition-colors"
-            >
-              Insights
-            </Link>
-            <Link
-              href="/cancellations"
-              className="px-3 py-1.5 rounded-lg text-[#A9BBCD] hover:text-white hover:bg-[#082746]/60 transition-colors"
-            >
-              Cancellations
-            </Link>
-            <Link
-              href="/relationships"
-              className="px-3 py-1.5 rounded-lg text-[#A9BBCD] hover:text-white hover:bg-[#082746]/60 transition-colors"
-            >
-              Relationships
-            </Link>
-            <Link
-              href="/upload"
-              className="px-3 py-1.5 rounded-lg text-[#A9BBCD] hover:text-white hover:bg-[#082746]/60 transition-colors"
-            >
-              Upload
-            </Link>
-          </nav>
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-          {/* Service Status Badge */}
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#082746] border border-[#164B68] text-[11px] text-[#A9BBCD]">
+  return (
+    <>
+      <header className="relative z-40 border-b border-[#164B68]/60 bg-[#011633]/85 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* LEFT SIDE: [Hamburger Menu] [PayScope Logo + Wordmark at TOP-LEFT] */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="p-2 rounded-xl bg-[#082746] hover:bg-[#0B3152] border border-[#164B68] text-[#A9BBCD] hover:text-[#00E0E0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00B8C7] cursor-pointer flex items-center justify-center shadow-sm"
+              aria-label="Open navigation menu"
+              aria-expanded={drawerOpen}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            {/* Top-Left Target Logo Anchor: Settles here after 3D emergence transition */}
+            <div
+              ref={headerLogoRef}
+              id="header-target-logo"
+              className="flex items-center transition-opacity duration-300"
+              style={{ opacity: showFinalLogo ? 1 : 0 }}
+            >
+              <Link href="/" className="hover:opacity-90 transition-opacity flex items-center">
+                <PayScopeLogo variant="navbar" />
+              </Link>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: Essential Service Status Badges */}
+          <div className="flex items-center gap-2.5">
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#082746] border border-[#164B68] text-[11px] text-[#A9BBCD]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#00E0E0] animate-pulse" />
               Synthetic Mode
             </span>
             {apiConnected ? (
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 API 200 OK
               </span>
             ) : (
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                 API Offline
               </span>
             )}
           </div>
         </div>
+      </header>
 
-        {/* Top-Right Brand Anchor: Settles here after video zoom transition */}
-        <div
-          ref={headerLogoRef}
-          id="header-target-logo"
-          className="flex items-center justify-end transition-opacity duration-300"
-          style={{ opacity: showFinalLogo ? 1 : 0 }}
-        >
-          <Link href="/" className="hover:opacity-90 transition-opacity flex items-center">
-            <PayScopeLogo variant="navbar" />
-          </Link>
-        </div>
-      </div>
-    </header>
+      {/* Global Slide-out Drawer */}
+      <PayScopeDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+    </>
   );
 }
 

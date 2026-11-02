@@ -81,6 +81,21 @@ export function PayScopeLogo({
       </defs>
 
       <g filter="url(#psRibbonShadow)">
+        {/* ORBITAL SWOOSH: Curved digital trajectory accent */}
+        <path
+          d="M 12 78 C 16 98, 52 110, 84 92 C 98 84, 102 62, 94 44 C 88 30, 76 20, 64 16"
+          stroke="url(#psBowlGrad)"
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          strokeDasharray="4 3"
+          opacity="0.65"
+        />
+
+        {/* THREE ASCENDING ANALYTICS BARS: Inside/beside the lower bowl */}
+        <rect x="52" y="50" width="3.5" height="12" rx="1.75" fill="#00E0E0" opacity="0.85" />
+        <rect x="58.5" y="42" width="3.5" height="20" rx="1.75" fill="#00B8C7" opacity="0.9" />
+        <rect x="65" y="32" width="3.5" height="30" rx="1.75" fill="#F08A00" opacity="0.95" />
+
         {/* BACK/LOWER LAYER: Ribbon passes under the vertical stem to lower-left loop */}
         <path
           d="M 64 66 C 54 68, 40 68, 30 76 C 18 88, 14 104, 25 106 C 36 108, 44 98, 44 84"
@@ -115,10 +130,11 @@ export function PayScopeLogo({
       {Symbol}
       {shouldDisplayWordmark && (
         <span
-          className={`font-black tracking-tight select-none text-white ${textClass}`}
+          className={`font-black tracking-tight select-none ${textClass}`}
           style={{ letterSpacing: "-0.025em" }}
         >
-          PayScope
+          <span className="text-[#F4F7FB]">Pay</span>
+          <span className="text-[#F08A00]">Scope</span>
         </span>
       )}
     </div>

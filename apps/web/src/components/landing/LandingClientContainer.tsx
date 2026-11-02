@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PayScopeLandingHeader } from "@/components/landing/PayScopeLandingHeader";
@@ -11,27 +11,78 @@ interface LandingClientContainerProps {
 }
 
 export function LandingClientContainer({ apiConnected }: LandingClientContainerProps) {
-  const [introFinished, setIntroFinished] = useState(false);
+  const [introFinished, setIntroFinished] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        if (sessionStorage.getItem("payscope_intro_transition_seen") === "true") {
+          return true;
+        }
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          return true;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    return false;
+  });
+
   const headerLogoRef = useRef<HTMLDivElement | null>(null);
+  const ambientVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Enforce the 0s -> 4.18s ambient video segment loop in the hero background
+  useEffect(() => {
+    const video = ambientVideoRef.current;
+    if (!video) return;
+
+    let animId: number;
+
+    const checkAmbientLoop = () => {
+      if (video.currentTime >= 4.18) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      }
+      animId = requestAnimationFrame(checkAmbientLoop);
+    };
+
+    animId = requestAnimationFrame(checkAmbientLoop);
+    return () => cancelAnimationFrame(animId);
+  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col justify-between bg-[#011633] text-slate-100 overflow-x-hidden select-none">
-      {/* 1. CINEMATIC VIDEO INTRO OVERLAY */}
+      {/* 1. CINEMATIC ONE-TIME VIDEO INTRO OVERLAY */}
       <IntroSequence
         onComplete={() => setIntroFinished(true)}
         headerLogoRef={headerLogoRef}
       />
 
-      {/* 2. BACKGROUND: Cinematic City / Data-Network Visual */}
+      {/* 2. BACKGROUND: Looping Hero Picker Visual (0s to 4.18s segment) + City Visual */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute inset-0 anim-stage-2">
+        {/* Ambient Looping Video Layer */}
+        <div className="absolute inset-0 opacity-25 brightness-90 contrast-110">
+          <video
+            id="ambient-hero-video"
+            ref={ambientVideoRef}
+            src="/videos/payscope-picker-intro.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover object-center pointer-events-none"
+          />
+        </div>
+
+        {/* Ambient City Network Fallback Backdrop */}
+        <div className="absolute inset-0 opacity-20 mix-blend-screen pointer-events-none">
           <Image
             src="/images/mandatelens-fintech-hero.jpg"
             alt="City data network recurring payment intelligence visual"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center scale-105 opacity-40 brightness-75 contrast-125"
+            className="object-cover object-center scale-105"
           />
         </div>
 
@@ -43,7 +94,7 @@ export function LandingClientContainer({ apiConnected }: LandingClientContainerP
         <div className="absolute inset-0 bg-gradient-to-t from-[#011633] via-[#011633]/70 to-[#011633]/90" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#011633]/95 via-[#011633]/40 to-[#011633]/95" />
 
-        {/* Circular Financial Data Rings around central focal point */}
+        {/* Circular Financial Data Rings */}
         <div className="absolute top-[48%] left-1/2 pointer-events-none">
           <div className="w-[360px] h-[360px] rounded-full border border-[#00E0E0]/25 anim-ring-primary" />
           <div className="w-[520px] h-[520px] rounded-full border border-[#00B8C7]/15 border-dashed anim-ring-secondary" />
@@ -51,7 +102,7 @@ export function LandingClientContainer({ apiConnected }: LandingClientContainerP
         </div>
       </div>
 
-      {/* 3. HEADER: With Top-Right Target Brand Logo */}
+      {/* 3. HEADER: With Left Hamburger & Top-Left Target Brand Logo */}
       <PayScopeLandingHeader
         apiConnected={apiConnected}
         headerLogoRef={headerLogoRef}

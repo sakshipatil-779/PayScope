@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import AppHeader from "@/components/navigation/AppHeader";
+
 interface SavingsOpportunity {
   id: string;
   opportunity_type: string;
@@ -243,52 +245,9 @@ export default function SavingsPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-teal-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-[#011633] text-[#F4F7FB] antialiased selection:bg-teal-500 selection:text-slate-950">
       {/* Platform Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center font-bold text-teal-400 text-lg shadow-sm">
-              M
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-teal-400">Lens</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 font-normal">
-                  Savings & Projections
-                </span>
-              </span>
-            </div>
-          </Link>
-
-          <nav className="flex items-center gap-2 text-xs font-medium">
-            <Link
-              href="/financial-impact"
-              className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors"
-            >
-              Financial Impact
-            </Link>
-            <Link
-              href="/savings"
-              className="px-3 py-1.5 rounded-md border border-teal-500/30 bg-teal-500/10 text-teal-300 font-semibold shadow-sm"
-            >
-              Savings & Projections
-            </Link>
-            <Link
-              href="/commitments"
-              className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors"
-            >
-              Commitments
-            </Link>
-            <Link
-              href="/insights"
-              className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors"
-            >
-              Insights
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
@@ -298,7 +257,7 @@ export default function SavingsPage() {
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
               Savings Intelligence & What-If Financial Projections
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-[#A9BBCD] mt-1">
               Simulate expenditure reductions from price increase renegotiations, verified unused cancellations, and duplicate service consolidations.
             </p>
           </div>
@@ -321,7 +280,7 @@ export default function SavingsPage() {
               <span className="font-semibold text-teal-300 block">
                 Evidence Classification Standard: POTENTIAL vs REALIZED
               </span>
-              <p className="text-slate-300 mt-0.5">
+              <p className="text-[#F4F7FB] mt-0.5">
                 Every figure on this page represents a <strong className="text-white">POTENTIAL</strong> or <strong className="text-white">USER_SELECTED</strong> scenario based on historical statements. Savings are never recorded as <strong className="text-white">REALIZED</strong> without verified confirmation.
               </p>
             </div>
@@ -330,9 +289,9 @@ export default function SavingsPage() {
 
         {/* Loading and Error */}
         {loading && (
-          <div className="p-12 text-center rounded-xl border border-slate-800 bg-slate-900/40">
+          <div className="p-12 text-center rounded-xl border border-[#164B68] bg-[#082746]/40">
             <div className="w-8 h-8 rounded-full border-2 border-teal-400 border-t-transparent animate-spin mx-auto mb-3" />
-            <span className="text-sm text-slate-400 font-mono">Evaluating savings opportunities & evidence...</span>
+            <span className="text-sm text-[#A9BBCD] font-mono">Evaluating savings opportunities & evidence...</span>
           </div>
         )}
 
@@ -354,49 +313,49 @@ export default function SavingsPage() {
                   </span>
                   <span className="text-xs text-teal-400/80 font-normal">/yr</span>
                 </div>
-                <div className="mt-3 pt-2 border-t border-teal-900/40 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="mt-3 pt-2 border-t border-teal-900/40 flex items-center justify-between text-[11px] text-[#A9BBCD]">
                   <span>{summary.opportunities_count} Total Opportunities</span>
                   <span className="text-teal-400 font-mono">Deduped Max</span>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 flex flex-col justify-between">
-                <span className="text-xs font-medium text-slate-400">Price Increase Reversions</span>
+              <div className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-5 flex flex-col justify-between">
+                <span className="text-xs font-medium text-[#A9BBCD]">Price Increase Reversions</span>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="text-2xl lg:text-3xl font-bold text-amber-300 font-mono">
                     ₹{summary.price_increase_savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xs text-slate-500 font-normal">/yr</span>
+                  <span className="text-xs text-[#A9BBCD] font-normal">/yr</span>
                 </div>
-                <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="mt-3 pt-2 border-t border-[#164B68] flex items-center justify-between text-[11px] text-[#A9BBCD]">
                   <span>Incremental Step Hikes</span>
                   <span className="text-amber-400/80">Sustained Alerts</span>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 flex flex-col justify-between">
-                <span className="text-xs font-medium text-slate-400">Verified Unused Cancellations</span>
+              <div className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-5 flex flex-col justify-between">
+                <span className="text-xs font-medium text-[#A9BBCD]">Verified Unused Cancellations</span>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="text-2xl lg:text-3xl font-bold text-cyan-300 font-mono">
                     ₹{summary.unused_commitment_savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xs text-slate-500 font-normal">/yr</span>
+                  <span className="text-xs text-[#A9BBCD] font-normal">/yr</span>
                 </div>
-                <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="mt-3 pt-2 border-t border-[#164B68] flex items-center justify-between text-[11px] text-[#A9BBCD]">
                   <span>Zero Activity Logged</span>
                   <span className="text-cyan-400">Verified Coverage</span>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 flex flex-col justify-between">
-                <span className="text-xs font-medium text-slate-400">Category Consolidation</span>
+              <div className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-5 flex flex-col justify-between">
+                <span className="text-xs font-medium text-[#A9BBCD]">Category Consolidation</span>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="text-2xl lg:text-3xl font-bold text-indigo-300 font-mono">
                     ₹{summary.duplicate_service_savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>
-                  <span className="text-xs text-slate-500 font-normal">/yr</span>
+                  <span className="text-xs text-[#A9BBCD] font-normal">/yr</span>
                 </div>
-                <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="mt-3 pt-2 border-t border-[#164B68] flex items-center justify-between text-[11px] text-[#A9BBCD]">
                   <span>Overlapping Subscriptions</span>
                   <span className="text-indigo-400">Review Required</span>
                 </div>
@@ -419,7 +378,7 @@ export default function SavingsPage() {
                         </span>
                       )}
                     </h2>
-                    <p className="text-xs text-slate-400 mt-1 max-w-xl">
+                    <p className="text-xs text-[#A9BBCD] mt-1 max-w-xl">
                       Formula: Projected Annual Cost = Current Annualized Outflow &minus; Selected Annual Savings.
                       Includes strict non-negative and double-counting protection.
                     </p>
@@ -428,8 +387,8 @@ export default function SavingsPage() {
                   {/* Comparison Figures */}
                   <div className="flex flex-wrap items-center gap-6 font-mono">
                     <div className="text-right">
-                      <span className="text-[11px] text-slate-400 block font-sans">Baseline Outflow</span>
-                      <span className="text-xl font-bold text-slate-300">
+                      <span className="text-[11px] text-[#A9BBCD] block font-sans">Baseline Outflow</span>
+                      <span className="text-xl font-bold text-[#F4F7FB]">
                         ₹{projection.baseline_annual_cost.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </span>
                     </div>
@@ -459,12 +418,12 @@ export default function SavingsPage() {
 
                 {/* Applied Safeguards List */}
                 {projection.safeguards_applied.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
-                    <span className="font-semibold text-slate-300">Applied Engine Safeguards:</span>
+                  <div className="mt-4 pt-3 border-t border-[#164B68]/80 flex flex-wrap items-center gap-2 text-[11px] text-[#A9BBCD]">
+                    <span className="font-semibold text-[#F4F7FB]">Applied Engine Safeguards:</span>
                     {projection.safeguards_applied.map((s, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700/60 text-slate-300"
+                        className="px-2 py-0.5 rounded bg-[#0B3152] border border-[#164B68]/60 text-[#F4F7FB]"
                       >
                         {s}
                       </span>
@@ -481,7 +440,7 @@ export default function SavingsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-semibold text-white">Savings Opportunities</h3>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#0B3152] text-[#A9BBCD]">
                       {filteredOpportunities.length} Found
                     </span>
                   </div>
@@ -495,7 +454,7 @@ export default function SavingsPage() {
                     </button>
                     <button
                       onClick={clearSelection}
-                      className="px-2.5 py-1 rounded-md text-xs text-slate-400 hover:bg-slate-800 border border-slate-800 transition-colors"
+                      className="px-2.5 py-1 rounded-md text-xs text-[#A9BBCD] hover:bg-[#0B3152] border border-[#164B68] transition-colors"
                     >
                       Deselect All
                     </button>
@@ -503,7 +462,7 @@ export default function SavingsPage() {
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+                      className="px-2.5 py-1 rounded-md bg-[#082746] border border-[#164B68] text-xs text-[#F4F7FB] focus:outline-none focus:border-cyan-500"
                     >
                       <option value="ALL">All Types</option>
                       <option value="PRICE_INCREASE">Price Increases</option>
@@ -523,8 +482,8 @@ export default function SavingsPage() {
                         onClick={() => toggleOpportunity(opp.id)}
                         className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                           isChecked
-                            ? "bg-slate-900/90 border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.08)]"
-                            : "bg-slate-900/40 border-slate-800/80 opacity-75 hover:opacity-100 hover:border-slate-700"
+                            ? "bg-[#031B38]/90 border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.08)]"
+                            : "bg-[#082746]/40 border-[#164B68]/80 opacity-75 hover:opacity-100 hover:border-[#164B68]"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -532,7 +491,7 @@ export default function SavingsPage() {
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => toggleOpportunity(opp.id)}
-                            className="mt-1 w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 border-slate-700 bg-slate-950 cursor-pointer"
+                            className="mt-1 w-4 h-4 rounded text-cyan-500 focus:ring-cyan-500 border-[#164B68] bg-[#011633] cursor-pointer"
                           />
                           <div>
                             <div className="flex items-center gap-2">
@@ -550,18 +509,18 @@ export default function SavingsPage() {
                               >
                                 {opp.opportunity_type.replace("_", " ")}
                               </span>
-                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
+                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#0B3152] text-[#A9BBCD]">
                                 {opp.classification}
                               </span>
                             </div>
 
-                            <p className="text-xs text-slate-300 mt-1 max-w-lg leading-relaxed">
+                            <p className="text-xs text-[#F4F7FB] mt-1 max-w-lg leading-relaxed">
                               {opp.evidence_summary}
                             </p>
 
-                            <div className="flex items-center gap-3 mt-2 text-[11px] text-slate-400">
-                              <span>Merchant: <strong className="text-slate-300">{opp.merchant_name}</strong></span>
-                              <span>Category: <strong className="text-slate-300">{opp.category}</strong></span>
+                            <div className="flex items-center gap-3 mt-2 text-[11px] text-[#A9BBCD]">
+                              <span>Merchant: <strong className="text-[#F4F7FB]">{opp.merchant_name}</strong></span>
+                              <span>Category: <strong className="text-[#F4F7FB]">{opp.category}</strong></span>
                               {opp.insight_id && (
                                 <Link
                                   href={`/insights/${opp.insight_id}`}
@@ -580,10 +539,10 @@ export default function SavingsPage() {
                           <span className="text-sm font-bold text-teal-400 block">
                             Save ₹{opp.potential_annual_saving.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/yr
                           </span>
-                          <span className="text-xs text-slate-400 block">
+                          <span className="text-xs text-[#A9BBCD] block">
                             ₹{opp.potential_monthly_saving.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/mo
                           </span>
-                          <span className="text-[10px] text-slate-500 block mt-1">
+                          <span className="text-[10px] text-[#A9BBCD] block mt-1">
                             Current: ₹{opp.current_annual_cost.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/yr
                           </span>
                         </div>
@@ -592,7 +551,7 @@ export default function SavingsPage() {
                   })}
 
                   {filteredOpportunities.length === 0 && (
-                    <div className="p-8 text-center rounded-xl border border-slate-800 text-slate-500 text-xs">
+                    <div className="p-8 text-center rounded-xl border border-[#164B68] text-[#A9BBCD] text-xs">
                       No savings opportunities matching the selected filter.
                     </div>
                   )}
@@ -602,10 +561,10 @@ export default function SavingsPage() {
               {/* Right Column (1 Col): Save Scenario & Saved Scenarios List */}
               <div className="flex flex-col gap-6">
                 {/* Save Scenario Form Card */}
-                <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 flex flex-col gap-4">
+                <div className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-5 flex flex-col gap-4">
                   <div>
                     <h3 className="text-sm font-semibold text-white">Save Current Scenario</h3>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-xs text-[#A9BBCD] mt-0.5">
                       Persist this {selectedIds.length}-item simulation for tracking or future review.
                     </p>
                   </div>
@@ -618,7 +577,7 @@ export default function SavingsPage() {
 
                   <form onSubmit={handleSaveScenario} className="space-y-3">
                     <div>
-                      <label className="text-[11px] text-slate-400 font-medium block mb-1">
+                      <label className="text-[11px] text-[#A9BBCD] font-medium block mb-1">
                         Scenario Name *
                       </label>
                       <input
@@ -627,12 +586,12 @@ export default function SavingsPage() {
                         placeholder="e.g. Q4 Budget Optimization"
                         value={scenarioName}
                         onChange={(e) => setScenarioName(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                        className="w-full px-3 py-2 rounded-lg bg-[#011633] border border-[#164B68] text-xs text-[#F4F7FB] placeholder:text-[#A9BBCD] focus:outline-none focus:border-cyan-500"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[11px] text-slate-400 font-medium block mb-1">
+                      <label className="text-[11px] text-[#A9BBCD] font-medium block mb-1">
                         Description / Notes
                       </label>
                       <textarea
@@ -640,7 +599,7 @@ export default function SavingsPage() {
                         placeholder="Optional notes or assumptions..."
                         value={scenarioDesc}
                         onChange={(e) => setScenarioDesc(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                        className="w-full px-3 py-2 rounded-lg bg-[#011633] border border-[#164B68] text-xs text-[#F4F7FB] placeholder:text-[#A9BBCD] focus:outline-none focus:border-cyan-500"
                       />
                     </div>
 
@@ -655,28 +614,28 @@ export default function SavingsPage() {
                 </div>
 
                 {/* Saved Scenarios List */}
-                <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 flex flex-col gap-4">
+                <div className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-5 flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-white">Saved Scenarios</h3>
-                    <span className="text-xs text-slate-400 font-mono">{savedScenarios.length}</span>
+                    <span className="text-xs text-[#A9BBCD] font-mono">{savedScenarios.length}</span>
                   </div>
 
                   <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                     {savedScenarios.map((scen) => (
                       <div
                         key={scen.id}
-                        className="p-3 rounded-lg bg-slate-950/80 border border-slate-800 text-xs flex flex-col gap-2"
+                        className="p-3 rounded-lg bg-[#011633]/80 border border-[#164B68] text-xs flex flex-col gap-2"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <span className="font-semibold text-white block">{scen.name}</span>
                             {scen.description && (
-                              <p className="text-[11px] text-slate-400 mt-0.5">{scen.description}</p>
+                              <p className="text-[11px] text-[#A9BBCD] mt-0.5">{scen.description}</p>
                             )}
                           </div>
                           <button
                             onClick={() => handleDeleteScenario(scen.id)}
-                            className="text-slate-500 hover:text-rose-400 text-xs font-mono transition-colors"
+                            className="text-[#A9BBCD] hover:text-rose-400 text-xs font-mono transition-colors"
                             title="Delete scenario"
                           >
                             &times;
@@ -695,7 +654,7 @@ export default function SavingsPage() {
                     ))}
 
                     {savedScenarios.length === 0 && (
-                      <p className="text-xs text-slate-500 text-center py-4">
+                      <p className="text-xs text-[#A9BBCD] text-center py-4">
                         No saved simulation scenarios yet.
                       </p>
                     )}

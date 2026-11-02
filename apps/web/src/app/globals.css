@@ -1,13 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #030712;
-  --foreground: #f8fafc;
+  --background: #011633;
+  --foreground: #F4F7FB;
+
+  /* PayScope Approved Palette */
+  --payscope-navy: #011633;
+  --payscope-navy-deep: #031B38;
+  --payscope-card: #082746;
+  --payscope-card-secondary: #0B3152;
+  --payscope-orange: #F08A00;
+  --payscope-orange-bright: #FFA52B;
+  --payscope-teal: #00B8C7;
+  --payscope-cyan: #00E0E0;
+  --payscope-white: #F4F7FB;
+  --payscope-muted: #A9BBCD;
+  --payscope-border: #164B68;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-payscope-navy: var(--payscope-navy);
+  --color-payscope-navy-deep: var(--payscope-navy-deep);
+  --color-payscope-card: var(--payscope-card);
+  --color-payscope-card-secondary: var(--payscope-card-secondary);
+  --color-payscope-orange: var(--payscope-orange);
+  --color-payscope-orange-bright: var(--payscope-orange-bright);
+  --color-payscope-teal: var(--payscope-teal);
+  --color-payscope-cyan: var(--payscope-cyan);
+  --color-payscope-white: var(--payscope-white);
+  --color-payscope-muted: var(--payscope-muted);
+  --color-payscope-border: var(--payscope-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -15,7 +39,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
 }
 

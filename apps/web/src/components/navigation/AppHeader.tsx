@@ -2,104 +2,62 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import PayScopeLogo from "@/components/brand/PayScopeLogo";
+import PayScopeDrawer from "@/components/navigation/PayScopeDrawer";
 
-export interface NavItem {
-  label: string;
-  href: string;
-  badge?: number | string;
+export interface AppHeaderProps {
+  apiConnected?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Commitments", href: "/commitments" },
-  { label: "Insights", href: "/insights" },
-  { label: "Financial Impact", href: "/financial-impact" },
-  { label: "Savings", href: "/savings" },
-  { label: "Merchants", href: "/merchants" },
-  { label: "Review Queue", href: "/merchant-review" },
-  { label: "Cancellations", href: "/cancellations" },
-  { label: "Relationships", href: "/relationships" },
-  { label: "Upload", href: "/upload" },
-];
-
-export function AppHeader() {
-  const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export function AppHeader({ apiConnected = true }: AppHeaderProps) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <header className="border-b border-[#164B68] bg-[#031B38]/90 backdrop-blur-md sticky top-0 z-50 transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
-        <div className="flex items-center gap-6">
-          <Link href="/" className="hover:opacity-90 transition-opacity flex items-center">
-            <PayScopeLogo variant="navbar" />
-          </Link>
-        </div>
+    <>
+      <header className="border-b border-[#164B68] bg-[#031B38]/90 backdrop-blur-md sticky top-0 z-40 transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* LEFT SIDE: [Hamburger Menu] [PayScope Logo + Wordmark] */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="p-2 rounded-xl bg-[#082746] hover:bg-[#0B3152] border border-[#164B68] text-[#A9BBCD] hover:text-[#00E0E0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00B8C7] cursor-pointer flex items-center justify-center shadow-sm"
+              aria-label="Open navigation menu"
+              aria-expanded={drawerOpen}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
 
-        {/* Desktop Nav */}
-        <nav className="hidden xl:flex items-center gap-1.5 text-xs font-medium">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3 py-1.5 rounded-lg transition-colors ${
-                  isActive
-                    ? "bg-[#082746] text-[#FFA52B] border border-[#F08A00]/40 font-semibold shadow-sm"
-                    : "text-[#A9BBCD] hover:text-white hover:bg-[#082746]/60 border border-transparent"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+            <Link href="/" className="hover:opacity-90 transition-opacity flex items-center">
+              <PayScopeLogo variant="navbar" />
+            </Link>
+          </div>
 
-        {/* Mobile menu button */}
-        <div className="flex xl:hidden items-center gap-2">
-          <Link
-            href="/dashboard"
-            className="text-xs px-3 py-1.5 rounded-lg bg-[#082746] border border-[#164B68] text-[#00E0E0] font-semibold"
-          >
-            Dashboard
-          </Link>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg bg-[#082746] border border-[#164B68] text-[#A9BBCD] hover:text-white"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? "✕" : "☰"}
-          </button>
+          {/* RIGHT SIDE: Essential status / environment indicator */}
+          <div className="flex items-center gap-2.5">
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#082746] border border-[#164B68] text-[11px] text-[#A9BBCD]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00E0E0] animate-pulse" />
+              Synthetic Mode
+            </span>
+            {apiConnected ? (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                API 200 OK
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                API Offline
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="xl:hidden border-t border-[#164B68] bg-[#031B38] px-4 py-3 flex flex-col gap-1 shadow-2xl">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-3 py-2 rounded-lg text-xs font-medium flex items-center justify-between ${
-                  isActive
-                    ? "bg-[#082746] text-[#FFA52B] border border-[#F08A00]/30"
-                    : "text-[#A9BBCD] hover:bg-[#082746] hover:text-white"
-                }`}
-              >
-                <span>{item.label}</span>
-                {isActive && <span className="text-[10px] text-[#00E0E0]">●</span>}
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </header>
+      {/* Global Slide-out Drawer */}
+      <PayScopeDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+    </>
   );
 }
 

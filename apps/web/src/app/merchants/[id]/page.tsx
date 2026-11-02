@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, use } from "react";
-import Link from "next/link";
+
+import AppHeader from "@/components/navigation/AppHeader";
 
 interface MerchantDetail {
   id: string;
@@ -138,44 +139,14 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col bg-[#011633] text-[#F4F7FB] antialiased selection:bg-[#F08A00] selection:text-white">
       {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-lg shadow-sm group-hover:border-emerald-500 transition-colors">
-                M
-              </div>
-              <span className="font-semibold text-lg tracking-tight text-white flex items-center gap-2">
-                Mandate<span className="text-emerald-400">Lens</span>
-              </span>
-            </Link>
-            <span className="text-slate-600">/</span>
-            <Link href="/merchants" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-              Merchants
-            </Link>
-            <span className="text-slate-600">/</span>
-            <span className="text-sm font-medium text-slate-200 truncate max-w-xs">
-              {merchant?.canonical_name || "Detail"}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/merchants"
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200 transition-colors"
-            >
-              Back to Catalogue
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       {/* Main Container */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
         {loading ? (
-          <div className="py-12 text-center text-xs text-slate-500">
+          <div className="py-12 text-center text-xs text-[#A9BBCD]">
             Loading merchant profile...
           </div>
         ) : error || !merchant ? (
@@ -185,11 +156,11 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
         ) : (
           <>
             {/* Merchant Identity Card */}
-            <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col gap-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <section className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col gap-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#164B68] pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                    <span className="text-xs font-mono uppercase px-2 py-0.5 rounded bg-[#0B3152] text-[#F4F7FB] border border-[#164B68]">
                       {merchant.category.replace("_", " ")}
                     </span>
                     <span className="text-xs text-emerald-400 font-medium">
@@ -202,12 +173,12 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div className="flex items-center gap-4 text-xs font-mono">
-                  <div className="rounded bg-slate-950 p-2.5 border border-slate-800">
-                    <span className="text-slate-500 block text-[10px]">Aliases</span>
+                  <div className="rounded bg-[#011633] p-2.5 border border-[#164B68]">
+                    <span className="text-[#A9BBCD] block text-[10px]">Aliases</span>
                     <span className="text-base font-bold text-white">{merchant.alias_count}</span>
                   </div>
-                  <div className="rounded bg-slate-950 p-2.5 border border-slate-800">
-                    <span className="text-slate-500 block text-[10px]">Linked Txns</span>
+                  <div className="rounded bg-[#011633] p-2.5 border border-[#164B68]">
+                    <span className="text-[#A9BBCD] block text-[10px]">Linked Txns</span>
                     <span className="text-base font-bold text-emerald-400">{merchant.transaction_count}</span>
                   </div>
                 </div>
@@ -215,54 +186,54 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
                 <div>
-                  <span className="text-slate-500 block">Merchant ID:</span>
-                  <span className="text-slate-300 break-all">{merchant.id}</span>
+                  <span className="text-[#A9BBCD] block">Merchant ID:</span>
+                  <span className="text-[#F4F7FB] break-all">{merchant.id}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block">Default Commitment:</span>
-                  <span className="text-slate-300 capitalize">{merchant.commitment_type_default?.replace("_", " ") || "Subscription"}</span>
+                  <span className="text-[#A9BBCD] block">Default Commitment:</span>
+                  <span className="text-[#F4F7FB] capitalize">{merchant.commitment_type_default?.replace("_", " ") || "Subscription"}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 block">Provenance:</span>
-                  <span className="text-slate-300">{merchant.reference_source || "Hand-curated fixtures"}</span>
+                  <span className="text-[#A9BBCD] block">Provenance:</span>
+                  <span className="text-[#F4F7FB]">{merchant.reference_source || "Hand-curated fixtures"}</span>
                 </div>
               </div>
             </section>
 
             {/* ALIASES TABLE & MANAGEMENT */}
-            <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 flex flex-col gap-6 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <section className="rounded-xl border border-[#164B68] bg-[#082746]/50 p-6 flex flex-col gap-6 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#164B68] pb-4">
                 <div>
                   <h3 className="text-base font-semibold text-white">
                     Known Descriptor Aliases ({aliases.length})
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-[#A9BBCD]">
                     Raw patterns that resolve to this canonical merchant identity.
                   </p>
                 </div>
               </div>
 
               {/* Form to Add New Alias */}
-              <form onSubmit={handleAddAlias} className="rounded-lg bg-slate-950/70 border border-slate-800 p-4 space-y-3 text-xs">
-                <h4 className="font-semibold text-slate-300">Add New Descriptor Alias</h4>
+              <form onSubmit={handleAddAlias} className="rounded-lg bg-[#011633]/70 border border-[#164B68] p-4 space-y-3 text-xs">
+                <h4 className="font-semibold text-[#F4F7FB]">Add New Descriptor Alias</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div className="sm:col-span-2 space-y-1">
-                    <label className="text-[11px] text-slate-400 block font-mono">Alias Text / Pattern</label>
+                    <label className="text-[11px] text-[#A9BBCD] block font-mono">Alias Text / Pattern</label>
                     <input
                       type="text"
                       value={newAliasText}
                       onChange={(e) => setNewAliasText(e.target.value)}
                       placeholder="e.g. POS STRMPLSE INTL"
-                      className="w-full rounded border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-mono text-white placeholder-slate-600 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded border border-[#164B68] bg-[#082746] px-3 py-1.5 text-xs font-mono text-white placeholder-slate-600 focus:border-emerald-500 focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] text-slate-400 block font-mono">Matcher Type</label>
+                    <label className="text-[11px] text-[#A9BBCD] block font-mono">Matcher Type</label>
                     <select
                       value={newMatcherType}
                       onChange={(e) => setNewMatcherType(e.target.value)}
-                      className="w-full rounded border border-slate-800 bg-slate-900 px-2 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded border border-[#164B68] bg-[#082746] px-2 py-1.5 text-xs text-[#F4F7FB] focus:border-emerald-500 focus:outline-none"
                     >
                       <option value="exact">exact</option>
                       <option value="prefix">prefix</option>
@@ -272,11 +243,11 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[11px] text-slate-400 block font-mono">Confidence Band</label>
+                    <label className="text-[11px] text-[#A9BBCD] block font-mono">Confidence Band</label>
                     <select
                       value={newConfidenceBand}
                       onChange={(e) => setNewConfidenceBand(e.target.value)}
-                      className="w-full rounded border border-slate-800 bg-slate-900 px-2 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded border border-[#164B68] bg-[#082746] px-2 py-1.5 text-xs text-[#F4F7FB] focus:border-emerald-500 focus:outline-none"
                     >
                       <option value="high">high</option>
                       <option value="medium">medium</option>
@@ -299,9 +270,9 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
               </form>
 
               {/* Aliases Table */}
-              <div className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950">
+              <div className="overflow-x-auto rounded-lg border border-[#164B68] bg-[#011633]">
                 <table className="w-full text-left text-xs font-mono">
-                  <thead className="bg-slate-900 border-b border-slate-800 text-slate-400">
+                  <thead className="bg-[#082746] border-b border-[#164B68] text-[#A9BBCD]">
                     <tr>
                       <th className="px-3 py-2">Alias String</th>
                       <th className="px-3 py-2">Normalised Alias</th>
@@ -313,11 +284,11 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
                   </thead>
                   <tbody className="divide-y divide-slate-850">
                     {aliases.map((al) => (
-                      <tr key={al.id} className="hover:bg-slate-900/50">
+                      <tr key={al.id} className="hover:bg-[#082746]/50">
                         <td className="px-3 py-2 text-white font-medium">{al.alias_text}</td>
                         <td className="px-3 py-2 text-emerald-400">{al.normalised_alias}</td>
                         <td className="px-3 py-2">
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-slate-700">
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-[#0B3152] text-[#F4F7FB] border border-[#164B68]">
                             {al.matcher_type}
                           </span>
                         </td>
@@ -332,10 +303,10 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
                             {al.confidence_band}
                           </span>
                         </td>
-                        <td className="px-3 py-2 text-slate-400">
+                        <td className="px-3 py-2 text-[#A9BBCD]">
                           {al.is_active ? "✓ Active" : "Disabled"}
                         </td>
-                        <td className="px-3 py-2 text-slate-500 text-[11px]">
+                        <td className="px-3 py-2 text-[#A9BBCD] text-[11px]">
                           {al.reference_source || "—"}
                         </td>
                       </tr>
@@ -349,8 +320,8 @@ export default function MerchantDetailPage({ params }: { params: Promise<{ id: s
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-6 text-center text-xs text-slate-500">
-        MandateLens Prototype — Synthetic financial data only. No real banking connectivity.
+      <footer className="border-t border-slate-900 bg-[#011633]/80 py-6 text-center text-xs text-[#A9BBCD]">
+        PayScope Prototype — Synthetic financial data only. No real banking connectivity.
       </footer>
     </div>
   );
