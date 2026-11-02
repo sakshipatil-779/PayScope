@@ -1,4 +1,4 @@
-# MandateLens — Recurring Payment Intelligence Platform
+# PayScope— Recurring Payment Intelligence Platform
 
 > **Tagline:** Find the money leaving quietly.  
 > **Prototype Data Policy:** Synthetic data only. No real bank, card, or payment provider credentials or accounts are ever connected or manipulated.
