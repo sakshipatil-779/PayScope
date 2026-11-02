@@ -172,6 +172,34 @@ def seed_demo_workspace(db: Session = Depends(get_db)) -> Dict[str, Any]:
     detector = CommitmentDetector(db)
     discovery = detector.discover_user_commitments(user.id)
 
+    # 5.5 Deduplicate orphan un-merchanted commitments if matched canonical commitment exists
+    from app.models.commitment_transaction import CommitmentTransaction
+    from app.models.commitment_insight import CommitmentInsight
+
+    all_comms = db.query(Commitment).filter(Commitment.user_id == user.id).all()
+    merchanted_map = {c.merchant.canonical_name.lower(): c for c in all_comms if c.merchant}
+    for c in list(all_comms):
+        if not c.merchant_id:
+            matched_c = None
+            for m_name, m_c in merchanted_map.items():
+                if m_name in c.display_name.lower() or c.display_name.lower() in m_name:
+                    matched_c = m_c
+                    break
+            if matched_c and matched_c.id != c.id:
+                for ct in db.query(CommitmentTransaction).filter(CommitmentTransaction.commitment_id == c.id).all():
+                    existing_link = db.query(CommitmentTransaction).filter(
+                        CommitmentTransaction.commitment_id == matched_c.id,
+                        CommitmentTransaction.transaction_id == ct.transaction_id,
+                    ).first()
+                    if not existing_link:
+                        ct.commitment_id = matched_c.id
+                    else:
+                        db.delete(ct)
+                for ci in db.query(CommitmentInsight).filter(CommitmentInsight.commitment_id == c.id).all():
+                    ci.commitment_id = matched_c.id
+                db.delete(c)
+    db.commit()
+
     # 6. Confirm representative commitments for demo
     commitments = db.query(Commitment).filter(Commitment.user_id == user.id).all()
     confirmed_count = 0

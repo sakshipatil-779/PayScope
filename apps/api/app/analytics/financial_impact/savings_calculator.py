@@ -81,8 +81,11 @@ def get_user_savings_opportunities(
         seen_price_commitment_ids.add(c.id)
 
         c_item = cost_map.get(c.id)
-        current_monthly = c_item.normalized_monthly_cost if c_item else (pe.new_amount or Decimal("0.00"))
-        current_annual = c_item.annualized_cost if c_item else (current_monthly * Decimal("12"))
+        # Safeguard: Exclude unconfirmed/candidate commitments from confirmed savings opportunities
+        if not c_item or not c_item.is_confirmed:
+            continue
+        current_monthly = c_item.normalized_monthly_cost
+        current_annual = c_item.annualized_cost
 
         monthly_increase = pe.absolute_change or Decimal("0.00")
         annual_impact = monthly_increase * Decimal("12")
@@ -173,8 +176,11 @@ def get_user_savings_opportunities(
             continue
 
         c_item = cost_map.get(c.id)
-        current_monthly = c_item.normalized_monthly_cost if c_item else (c.representative_amount or Decimal("0.00"))
-        current_annual = c_item.annualized_cost if c_item else (current_monthly * Decimal("12"))
+        # Safeguard: Exclude unconfirmed/candidate commitments from confirmed savings opportunities
+        if not c_item or not c_item.is_confirmed:
+            continue
+        current_monthly = c_item.normalized_monthly_cost
+        current_annual = c_item.annualized_cost
 
         merchant_name = c.merchant.canonical_name if c.merchant else c.display_name
 
@@ -284,7 +290,12 @@ def get_user_savings_summary(
         if opp.potential_annual_saving > current_max:
             commitment_max_savings[opp.commitment_id] = opp.potential_annual_saving
 
-    total_annual = sum(commitment_max_savings.values(), Decimal("0.00"))
+    cost_items = get_user_commitment_costs(db, user_id)
+    confirmed_items = [item for item in cost_items if item.is_confirmed]
+    baseline_confirmed_spend = sum((item.annualized_cost for item in confirmed_items), Decimal("0.00"))
+
+    raw_annual = sum(commitment_max_savings.values(), Decimal("0.00"))
+    total_annual = min(raw_annual, baseline_confirmed_spend)
     total_monthly = round_currency(total_annual / Decimal("12"))
 
     return SavingsSummaryResponse(
