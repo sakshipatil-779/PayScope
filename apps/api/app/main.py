@@ -26,6 +26,17 @@ def create_application() -> FastAPI:
             allow_headers=["*"],
         )
 
+    # Root status endpoint for cloud health & quick browser checks
+    @application.get("/", tags=["Root"])
+    def root():
+        return {
+            "name": settings.PROJECT_NAME,
+            "status": "healthy",
+            "version": settings.VERSION,
+            "docs": f"{settings.API_V1_STR}/docs",
+            "health": f"{settings.API_V1_STR}/health",
+        }
+
     # Include API routers
     application.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
