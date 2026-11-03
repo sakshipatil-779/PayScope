@@ -48,15 +48,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
-    // 1. Recover stored guest session if any
-    try {
-      const stored = localStorage.getItem("payscope_demo_user");
-      if (stored) {
-        setUser(JSON.parse(stored));
+    // 1. Recover stored guest session asynchronously if present
+    const timer = setTimeout(() => {
+      try {
+        const stored = localStorage.getItem("payscope_demo_user");
+        if (stored) {
+          setUser(JSON.parse(stored));
+        }
+      } catch {
+        // Ignore
       }
-    } catch {
-      // Ignore
-    }
+      if (!isFirebaseConfigured || !auth) {
+        setLoading(false);
+      }
+    }, 0);
 
     // 2. Listen to live Firebase authentication state
     if (isFirebaseConfigured && auth) {
@@ -86,10 +91,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         setLoading(false);
       });
-      return () => unsubscribe();
-    } else {
-      setLoading(false);
+      return () => {
+        clearTimeout(timer);
+        unsubscribe();
+      };
     }
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   const signInWithGoogle = async () => {
