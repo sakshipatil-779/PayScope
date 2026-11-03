@@ -14,23 +14,19 @@ type Stage = "PLAYING" | "EMERGING" | "FLYING" | "COMPLETED";
 const CARD_PICK_TIMESTAMP = 4.18;
 
 export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps) {
-  // Check sessionStorage and prefers-reduced-motion in initial state
   const [stage, setStage] = useState<Stage>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        if (sessionStorage.getItem("payscope_intro_transition_seen") === "true") {
-          return "COMPLETED";
-        }
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          return "COMPLETED";
-        }
-      } catch {
-        // Fallback to playing
+    try {
+      if (
+        sessionStorage.getItem("payscope_intro_transition_seen") === "true" ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        return "COMPLETED";
       }
+    } catch {
+      // Ignore
     }
     return "PLAYING";
   });
-
   const [skipVisible, setSkipVisible] = useState(false);
   const [flyingStyle, setFlyingStyle] = useState<React.CSSProperties>({});
 
@@ -54,13 +50,6 @@ export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps)
     onComplete();
   }, [onComplete]);
 
-  // If initial stage is already COMPLETED, notify parent
-  useEffect(() => {
-    if (stage === "COMPLETED") {
-      onComplete();
-    }
-  }, [stage, onComplete]);
-
   // Autoplay handler with graceful fallback
   useEffect(() => {
     if (stage !== "PLAYING" || !videoRef.current) return;
@@ -78,78 +67,64 @@ export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps)
     return () => clearTimeout(skipTimer);
   }, [stage, finishIntro]);
 
-  // STAGE 3: Flight from emerging card position into the TOP-LEFT header logo target
-  const startFlightToTopLeft = useCallback(() => {
-    setStage("FLYING");
-
-    // Default top-left target fallback beside hamburger at extreme left (x: ~115px, y: 32px)
-    let targetX = 115;
-    let targetY = 32;
-
-    const targetEl =
-      (headerLogoRef && headerLogoRef.current) ||
-      document.getElementById("header-target-logo");
-
-    if (targetEl) {
-      const rect = targetEl.getBoundingClientRect();
-      targetX = rect.left + rect.width / 2;
-      targetY = rect.top + rect.height / 2;
-    }
-
-    // Start coordinates: Exactly at the card center (49.34% X, 69.51% Y)
-    const startX = window.innerWidth * 0.4934;
-    const startY = window.innerHeight * 0.6951;
-
-    const deltaX = targetX - startX;
-    const deltaY = targetY - startY;
-
-    // Apply FLIP flight styles: Up and to the LEFT into header beside hamburger
-    setFlyingStyle({
-      transform: `translate(${deltaX}px, ${deltaY}px) scale(0.68)`,
-      opacity: 1,
-      transition: "transform 750ms cubic-bezier(0.16, 1, 0.3, 1), opacity 750ms ease-in",
-    });
-
-    setTimeout(() => {
-      finishIntro();
-    }, 780);
-  }, [finishIntro, headerLogoRef]);
-
-  // High-precision RAF loop tracking video playback time and enforcing the 0 -> 4.18s segment loop
+  // High-precision video frame listener for seamless 4.18s transition
   useEffect(() => {
     if (stage !== "PLAYING") return;
 
-    const checkTiming = () => {
-      const video = videoRef.current;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const checkTimestamp = () => {
       if (!video) return;
 
-      const currentTime = video.currentTime;
-
-      // STAGE 2: Moment picker fingers close onto the PayScope card (at t ≈ 4.18s)
-      if (currentTime >= CARD_PICK_TIMESTAMP && !hasTriggeredEmergeRef.current) {
+      if (video.currentTime >= CARD_PICK_TIMESTAMP && !hasTriggeredEmergeRef.current) {
         hasTriggeredEmergeRef.current = true;
         setStage("EMERGING");
 
-        // Hold the video paused at the exact grip frame so the emerging card lifts directly from the scene
-        video.pause();
-
-        // Hold crisp emerging 3D logo prominently in position for 450ms, then launch flight to TOP-LEFT
         setTimeout(() => {
-          startFlightToTopLeft();
-        }, 450);
-        return;
+          if (!headerLogoRef?.current) {
+            finishIntro();
+            return;
+          }
+
+          const targetRect = headerLogoRef.current.getBoundingClientRect();
+          const targetX = targetRect.left + targetRect.width / 2;
+          const targetY = targetRect.top + targetRect.height / 2;
+
+          const currentX = window.innerWidth * 0.4934;
+          const currentY = window.innerHeight * 0.6951;
+
+          const deltaX = targetX - currentX;
+          const deltaY = targetY - currentY;
+          const scaleRatio = targetRect.height / 52;
+
+          setFlyingStyle({
+            transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleRatio})`,
+            transition: "transform 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 350ms ease-in-out",
+            opacity: 1,
+          });
+
+          setStage("FLYING");
+
+          setTimeout(() => {
+            finishIntro();
+          }, 650);
+        }, 150);
       }
 
-      animationFrameRef.current = requestAnimationFrame(checkTiming);
+      if (stage === "PLAYING") {
+        animationFrameRef.current = requestAnimationFrame(checkTimestamp);
+      }
     };
 
-    animationFrameRef.current = requestAnimationFrame(checkTiming);
+    animationFrameRef.current = requestAnimationFrame(checkTimestamp);
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [stage, startFlightToTopLeft]);
+  }, [stage, finishIntro, headerLogoRef]);
 
   if (stage === "COMPLETED") {
     return null;
@@ -162,7 +137,7 @@ export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps)
         perspective: "1200px",
       }}
     >
-      {/* 1. CINEMATIC VIDEO BACKDROP (Fades out during flight so homepage content reveals smoothly) */}
+      {/* 1. CINEMATIC VIDEO BACKGROUND */}
       <div
         className={`absolute inset-0 bg-[#011633] transition-opacity duration-700 ${
           stage === "FLYING" ? "opacity-0" : "opacity-100"
@@ -175,23 +150,21 @@ export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps)
           autoPlay
           muted
           playsInline
-          controls={false}
           preload="auto"
           className="w-full h-full object-contain md:object-cover pointer-events-none"
         />
-        {/* Subtle bottom lighting accent */}
+
         <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#011633] to-transparent pointer-events-none" />
       </div>
 
-      {/* 2. 3D EMERGING VECTOR LOGO & WORDMARK LOCKUP (Emerges forward from card position, then flies to top-left) */}
+      {/* 2. 3D EMERGING BRAND LOGO OVERLAY */}
       {(stage === "EMERGING" || stage === "FLYING") && (
         <div
-          className="fixed inset-0 pointer-events-none z-50"
+          className="absolute inset-0 pointer-events-none z-30"
           style={{
             perspective: "1200px",
           }}
         >
-          {/* Card positioned at measured coordinates: X = 49.34%, Y = 69.51% */}
           <div
             className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-3.5 px-6 py-4 rounded-2xl bg-gradient-to-r from-[#008299] via-[#006e82] to-[#011633] border border-[#00E0E0]/60 shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_40px_rgba(0,224,224,0.35)] backdrop-blur-md"
             style={{
@@ -209,7 +182,6 @@ export function IntroSequence({ onComplete, headerLogoRef }: IntroSequenceProps)
               transformStyle: "preserve-3d",
             }}
           >
-            {/* PayScope Emblem and Wordmark combined as ONE brand lockup */}
             <PayScopeLogo variant="full" size={44} />
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import AppHeader from "@/components/navigation/AppHeader";
 
 interface PayScopeAppShellProps {
@@ -19,7 +20,7 @@ export function PayScopeAppShell({
 
   return (
     <div className="min-h-screen flex flex-col bg-[#011633] text-[#F4F7FB] selection:bg-[#F08A00] selection:text-white antialiased">
-      {/* Global Header with Left Hamburger and PayScope Logo */}
+      {/* Global Header */}
       <AppHeader apiConnected={apiConnected} />
 
       {/* Main Content Area */}
@@ -28,13 +29,19 @@ export function PayScopeAppShell({
       </main>
 
       {/* Shared Footer */}
-      <footer className="border-t border-[#164B68]/60 bg-[#031B38]/60 py-6 text-center text-xs text-[#A9BBCD]">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="border-t border-[#164B68]/60 bg-[#031B38]/60 py-6 text-xs text-[#A9BBCD]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© {new Date().getFullYear()} PayScope — Recurring Payment Intelligence Platform.</p>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span className="text-[#00E0E0]">Synthetic Sandbox Data Only</span>
-            <span className="text-[#164B68]">•</span>
-            <span className="text-[#FFA52B]">Zero Live Bank Connection</span>
+          <div className="flex items-center gap-6 text-[12px]">
+            <Link href="/" className="hover:text-white transition-colors">
+              Home
+            </Link>
+            <Link href="/about" className="hover:text-white transition-colors">
+              About Us
+            </Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </footer>
