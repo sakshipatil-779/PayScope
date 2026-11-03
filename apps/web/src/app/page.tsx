@@ -1,4 +1,5 @@
 import { LandingClientContainer } from "@/components/landing/LandingClientContainer";
+import { getApiBaseUrl } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ interface HealthResult {
 }
 
 async function getBackendHealth(): Promise<HealthResult> {
-  const baseUrl = process.env.API_BASE_URL || "http://127.0.0.1:8000";
+  const baseUrl = getApiBaseUrl();
   const healthUrl = `${baseUrl.replace(/\/+$/, "")}/api/v1/health`;
   const timestamp = new Date().toISOString();
 
