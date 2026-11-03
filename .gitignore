@@ -45,6 +45,10 @@ test-results/
 !.env.example
 !.env.local.example
 
+# Archives & distribution zips
+*.zip
+*.tar.gz
+
 # Logs and runtime artifacts
 logs/
 *.log
