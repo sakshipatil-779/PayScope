@@ -1,4 +1,5 @@
 """Dashboard summary aggregation API endpoint."""
+import logging
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
 import uuid
@@ -20,6 +21,8 @@ from app.models.commitment_insight import CommitmentInsight
 from app.models.manual_review_item import ManualReviewItem
 from app.models.merchant import Merchant
 from app.repositories.user_repository import UserRepository
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
@@ -82,153 +85,200 @@ def _resolve_user_id(db: Session, user_id: Optional[uuid.UUID] = None) -> uuid.U
     return user.id
 
 
+def _get_fallback_dashboard_summary() -> DashboardSummaryResponse:
+    """Baseline fallback response if database is unseeded or temporarily offline."""
+    return DashboardSummaryResponse(
+        kpis=DashboardKPIs(
+            active_commitments_count=0,
+            monthly_recurring_spend=Decimal("0.00"),
+            annualized_recurring_spend=Decimal("0.00"),
+            open_insights_count=0,
+            potential_annual_savings=Decimal("0.00"),
+            cancellations_attention_count=0,
+        ),
+        financial_overview=DashboardFinancialOverview(
+            monthly_recurring_spend=Decimal("0.00"),
+            annualized_recurring_spend=Decimal("0.00"),
+            upcoming_month_expected=Decimal("0.00"),
+            candidate_annual_cost=Decimal("0.00"),
+            historical_months=[],
+            historical_amounts=[],
+        ),
+        top_commitments=[],
+        category_distribution={},
+        recent_insights=[],
+        insight_type_counts={
+            "price_increase": 0,
+            "trial_conversion": 0,
+            "potentially_unused": 0,
+            "post_cancellation_charge": 0,
+            "unusual_amount": 0,
+        },
+        cancellation_summary={
+            "total": 0,
+            "in_progress": 0,
+            "user_reported": 0,
+            "verified_cancelled": 0,
+            "needs_attention": 0,
+        },
+        merchant_review_pending=0,
+        canonical_merchants_count=0,
+    )
+
+
 @router.get("/summary", response_model=DashboardSummaryResponse)
 def get_dashboard_summary(
     user_id: Optional[uuid.UUID] = Query(None, description="Workspace user UUID"),
     db: Session = Depends(get_db),
 ) -> DashboardSummaryResponse:
     """Aggregates all real metrics across commitments, financial impact, insights, savings, and cancellations."""
-    target_user_id = _resolve_user_id(db, user_id)
+    try:
+        target_user_id = _resolve_user_id(db, user_id)
 
-    # 1. Financial summary & savings summary
-    fin_summary = get_user_financial_summary(db, target_user_id)
-    savings_summary = get_user_savings_summary(db, target_user_id)
-    upcoming = get_user_upcoming_expenditure(db, target_user_id)
-    history = get_user_historical_spend(db, target_user_id)
+        # 1. Financial summary & savings summary
+        fin_summary = get_user_financial_summary(db, target_user_id)
+        savings_summary = get_user_savings_summary(db, target_user_id)
+        upcoming = get_user_upcoming_expenditure(db, target_user_id)
+        history = get_user_historical_spend(db, target_user_id)
 
-    # 2. Insights
-    insights = list(
-        db.execute(
-            select(CommitmentInsight)
-            .join(Commitment, CommitmentInsight.commitment_id == Commitment.id)
-            .where(
-                Commitment.user_id == target_user_id,
-                CommitmentInsight.status == "open",
-            )
-            .order_by(CommitmentInsight.detected_at.desc())
-        ).scalars().all()
-    )
-
-    insight_counts: Dict[str, int] = {
-        "price_increase": 0,
-        "trial_conversion": 0,
-        "potentially_unused": 0,
-        "post_cancellation_charge": 0,
-        "unusual_amount": 0,
-    }
-    recent_insights_list: List[DashboardRecentInsight] = []
-
-    for ins in insights:
-        itype = ins.insight_type
-        if itype in insight_counts:
-            insight_counts[itype] += 1
-        else:
-            insight_counts[itype] = 1
-
-        if len(recent_insights_list) < 5:
-            recent_insights_list.append(
-                DashboardRecentInsight(
-                    id=ins.id,
-                    commitment_id=ins.commitment_id,
-                    commitment_name=ins.commitment.display_name if ins.commitment else "Commitment",
-                    insight_type=ins.insight_type,
-                    severity=ins.severity,
-                    title=ins.title,
-                    summary=ins.summary,
+        # 2. Insights
+        insights = list(
+            db.execute(
+                select(CommitmentInsight)
+                .join(Commitment, CommitmentInsight.commitment_id == Commitment.id)
+                .where(
+                    Commitment.user_id == target_user_id,
+                    CommitmentInsight.status == "open",
                 )
-            )
+                .order_by(CommitmentInsight.detected_at.desc())
+            ).scalars().all()
+        )
 
-    # 3. Commitments
-    all_commitments = list(
-        db.execute(
-            select(Commitment)
-            .where(Commitment.user_id == target_user_id)
-            .order_by(Commitment.representative_amount.desc().nullslast())
-        ).scalars().all()
-    )
+        insight_counts: Dict[str, int] = {
+            "price_increase": 0,
+            "trial_conversion": 0,
+            "potentially_unused": 0,
+            "post_cancellation_charge": 0,
+            "unusual_amount": 0,
+        }
+        recent_insights_list: List[DashboardRecentInsight] = []
 
-    top_commitments_list: List[DashboardTopCommitment] = []
-    category_distribution: Dict[str, Decimal] = {}
+        for ins in insights:
+            itype = ins.insight_type
+            if itype in insight_counts:
+                insight_counts[itype] += 1
+            else:
+                insight_counts[itype] = 1
 
-    for c in all_commitments:
-        if c.status in ("active", "confirmed", "user_confirmed"):
-            cat = (c.merchant.category if c.merchant and c.merchant.category else c.commitment_type).capitalize()
-            # Calculate monthly cost
-            amt = c.representative_amount or Decimal("0.00")
-            monthly_val = amt
-            if c.cadence == "annual":
-                monthly_val = round(amt / 12, 2)
-            elif c.cadence == "weekly":
-                monthly_val = round(amt * 52 / 12, 2)
-            elif c.cadence == "quarterly":
-                monthly_val = round(amt / 3, 2)
-
-            category_distribution[cat] = category_distribution.get(cat, Decimal("0.00")) + monthly_val
-
-            if len(top_commitments_list) < 6:
-                top_commitments_list.append(
-                    DashboardTopCommitment(
-                        id=c.id,
-                        display_name=c.display_name,
-                        merchant_name=c.merchant.canonical_name if c.merchant else None,
-                        category=cat,
-                        cadence=c.cadence,
-                        monthly_cost=monthly_val,
-                        status=c.status,
-                        confidence_band=c.confidence_band,
+            if len(recent_insights_list) < 5:
+                recent_insights_list.append(
+                    DashboardRecentInsight(
+                        id=ins.id,
+                        commitment_id=ins.commitment_id,
+                        commitment_name=ins.commitment.display_name if ins.commitment else "Commitment",
+                        insight_type=ins.insight_type,
+                        severity=ins.severity,
+                        title=ins.title,
+                        summary=ins.summary,
                     )
                 )
 
-    # 4. Cancellations
-    cancellation_cases = list(
-        db.execute(
-            select(CancellationCase).where(CancellationCase.user_id == target_user_id)
-        ).scalars().all()
-    )
+        # 3. Commitments
+        all_commitments = list(
+            db.execute(
+                select(Commitment)
+                .where(Commitment.user_id == target_user_id)
+                .order_by(Commitment.representative_amount.desc().nullslast())
+            ).scalars().all()
+        )
 
-    canc_summary = {
-        "total": len(cancellation_cases),
-        "in_progress": sum(1 for c in cancellation_cases if c.status == "IN_PROGRESS"),
-        "user_reported": sum(1 for c in cancellation_cases if c.status == "USER_REPORTED_CANCELLED"),
-        "verified_cancelled": sum(1 for c in cancellation_cases if c.status == "VERIFIED_CANCELLED"),
-        "needs_attention": sum(1 for c in cancellation_cases if c.status in ("IN_PROGRESS", "USER_REPORTED_CANCELLED")),
-    }
+        top_commitments_list: List[DashboardTopCommitment] = []
+        category_distribution: Dict[str, Decimal] = {}
 
-    # 5. Merchant review queue count & canonical count
-    pending_reviews_count = db.execute(
-        select(func.count(ManualReviewItem.id)).where(ManualReviewItem.status == "pending")
-    ).scalar() or 0
+        for c in all_commitments:
+            if c.status in ("active", "confirmed", "user_confirmed"):
+                cat = (c.merchant.category if c.merchant and c.merchant.category else c.commitment_type).capitalize()
+                amt = c.representative_amount or Decimal("0.00")
+                monthly_val = amt
+                if c.cadence == "annual":
+                    monthly_val = round(amt / 12, 2)
+                elif c.cadence == "weekly":
+                    monthly_val = round(amt * 52 / 12, 2)
+                elif c.cadence == "quarterly":
+                    monthly_val = round(amt / 3, 2)
 
-    canonical_merchants_count = db.execute(
-        select(func.count(Merchant.id))
-    ).scalar() or 0
+                category_distribution[cat] = category_distribution.get(cat, Decimal("0.00")) + monthly_val
 
-    kpis = DashboardKPIs(
-        active_commitments_count=fin_summary.total_confirmed_commitments,
-        monthly_recurring_spend=fin_summary.monthly_recurring_spend,
-        annualized_recurring_spend=fin_summary.annualized_recurring_spend,
-        open_insights_count=len(insights),
-        potential_annual_savings=savings_summary.total_potential_annual_savings,
-        cancellations_attention_count=canc_summary["needs_attention"],
-    )
+                if len(top_commitments_list) < 6:
+                    top_commitments_list.append(
+                        DashboardTopCommitment(
+                            id=c.id,
+                            display_name=c.display_name,
+                            merchant_name=c.merchant.canonical_name if c.merchant else None,
+                            category=cat,
+                            cadence=c.cadence,
+                            monthly_cost=monthly_val,
+                            status=c.status,
+                            confidence_band=c.confidence_band,
+                        )
+                    )
 
-    financial_overview = DashboardFinancialOverview(
-        monthly_recurring_spend=fin_summary.monthly_recurring_spend,
-        annualized_recurring_spend=fin_summary.annualized_recurring_spend,
-        upcoming_month_expected=upcoming.total_upcoming_30d,
-        candidate_annual_cost=fin_summary.potential_candidate_annual_cost,
-        historical_months=[p.period_label for p in history.periods],
-        historical_amounts=[p.gross_debit_amount for p in history.periods],
-    )
+        # 4. Cancellations
+        cancellation_cases = list(
+            db.execute(
+                select(CancellationCase).where(CancellationCase.user_id == target_user_id)
+            ).scalars().all()
+        )
 
-    return DashboardSummaryResponse(
-        kpis=kpis,
-        financial_overview=financial_overview,
-        top_commitments=top_commitments_list,
-        category_distribution=category_distribution,
-        recent_insights=recent_insights_list,
-        insight_type_counts=insight_counts,
-        cancellation_summary=canc_summary,
-        merchant_review_pending=pending_reviews_count,
-        canonical_merchants_count=canonical_merchants_count,
-    )
+        canc_summary = {
+            "total": len(cancellation_cases),
+            "in_progress": sum(1 for c in cancellation_cases if c.status == "IN_PROGRESS"),
+            "user_reported": sum(1 for c in cancellation_cases if c.status == "USER_REPORTED_CANCELLED"),
+            "verified_cancelled": sum(1 for c in cancellation_cases if c.status == "VERIFIED_CANCELLED"),
+            "needs_attention": sum(1 for c in cancellation_cases if c.status in ("IN_PROGRESS", "USER_REPORTED_CANCELLED")),
+        }
+
+        # 5. Merchant review queue count & canonical count
+        pending_reviews_count = db.execute(
+            select(func.count(ManualReviewItem.id)).where(ManualReviewItem.status == "pending")
+        ).scalar() or 0
+
+        canonical_merchants_count = db.execute(
+            select(func.count(Merchant.id))
+        ).scalar() or 0
+
+        kpis = DashboardKPIs(
+            active_commitments_count=fin_summary.total_confirmed_commitments,
+            monthly_recurring_spend=fin_summary.monthly_recurring_spend,
+            annualized_recurring_spend=fin_summary.annualized_recurring_spend,
+            open_insights_count=len(insights),
+            potential_annual_savings=savings_summary.total_potential_annual_savings,
+            cancellations_attention_count=canc_summary["needs_attention"],
+        )
+
+        financial_overview = DashboardFinancialOverview(
+            monthly_recurring_spend=fin_summary.monthly_recurring_spend,
+            annualized_recurring_spend=fin_summary.annualized_recurring_spend,
+            upcoming_month_expected=upcoming.total_upcoming_30d,
+            candidate_annual_cost=fin_summary.potential_candidate_annual_cost,
+            historical_months=[p.period_label for p in history.periods],
+            historical_amounts=[p.gross_debit_amount for p in history.periods],
+        )
+
+        return DashboardSummaryResponse(
+            kpis=kpis,
+            financial_overview=financial_overview,
+            top_commitments=top_commitments_list,
+            category_distribution=category_distribution,
+            recent_insights=recent_insights_list,
+            insight_type_counts=insight_counts,
+            cancellation_summary=canc_summary,
+            merchant_review_pending=pending_reviews_count,
+            canonical_merchants_count=canonical_merchants_count,
+        )
+    except Exception as exc:
+        logger.warning(
+            "Database unavailable or not yet initialized in get_dashboard_summary: %s. Returning fallback baseline data.",
+            exc,
+        )
+        return _get_fallback_dashboard_summary()

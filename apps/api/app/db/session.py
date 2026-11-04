@@ -4,13 +4,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from app.core.config import settings
 
-# Create engine with connection pooling and pre-ping to detect stale connections
+# Create engine with connection pooling, pre-ping, and connect_timeout
 engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
     pool_size=10,
     max_overflow=20,
     echo=False,
+    connect_args={'connect_timeout': 5},
 )
 
 SessionLocal = sessionmaker(
