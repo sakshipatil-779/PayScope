@@ -1,8 +1,9 @@
 /**
- * Firebase Client Configuration & Authentication Service
+ * Firebase Client Configuration, Authentication & Firestore Text Store
  */
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
@@ -22,6 +23,7 @@ export const isFirebaseConfigured = Boolean(
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let googleProvider: GoogleAuthProvider | null = null;
+let firestore: Firestore | null = null;
 
 if (typeof window !== "undefined") {
   if (isFirebaseConfigured) {
@@ -29,8 +31,13 @@ if (typeof window !== "undefined") {
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: "select_account" });
+    try {
+      firestore = getFirestore(app);
+    } catch (e) {
+      console.warn("Firestore initialization warning:", e);
+    }
   }
 }
 
-export { app, auth, googleProvider };
+export { app, auth, googleProvider, firestore };
 

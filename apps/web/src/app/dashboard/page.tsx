@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import AppHeader from "@/components/navigation/AppHeader";
+import { TextStoreWidget } from "@/components/common/TextStoreWidget";
+
 import { getApiBaseUrl, fetchWithRetry } from "@/lib/api";
 
 interface DashboardKPIs {
@@ -499,6 +501,14 @@ export default function UnifiedDashboardPage() {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Section G: Firebase Firestore Free Text Storage */}
+        <div className="flex flex-col gap-3">
+          <TextStoreWidget
+            title="Firebase Cloud Text Store (Free Spark Tier)"
+            placeholder="Save text notes, merchant reminders, cancellation instructions, or audit remarks directly to Firebase Firestore..."
+          />
         </div>
 
         {/* Section E & F: Cancellations and Merchant Review */}
