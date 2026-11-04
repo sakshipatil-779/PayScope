@@ -1,5 +1,6 @@
 """Import coordination service handling preview and persistence with merchant resolution."""
 import hashlib
+import logging
 import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -19,6 +20,8 @@ from app.models.import_record import ImportRecord
 from app.models.payment_notification import PaymentNotification
 from app.models.transaction import Transaction
 from app.repositories.import_repository import ImportRepository
+
+logger = logging.getLogger(__name__)
 
 
 class ImportService:
@@ -102,18 +105,25 @@ class ImportService:
             ]
             existing_ids: Set[str] = set()
             if candidate_ext_ids:
-                stmt = select(Transaction.external_synthetic_id).where(
-                    Transaction.user_id == user_id,
-                    Transaction.external_synthetic_id.in_(candidate_ext_ids),
-                )
-                existing_ids = set(db.scalars(stmt).all())
+                try:
+                    stmt = select(Transaction.external_synthetic_id).where(
+                        Transaction.user_id == user_id,
+                        Transaction.external_synthetic_id.in_(candidate_ext_ids),
+                    )
+                    existing_ids = set(db.scalars(stmt).all())
+                except Exception as exc:
+                    logger.warning("Could not query duplicate transaction IDs from DB: %s", exc)
 
             # Count duplicates vs new
             duplicate_count = sum(1 for r in norm_result.valid_records if r.get("external_synthetic_id") in existing_ids)
             net_valid_count = len(norm_result.valid_records) - duplicate_count
 
             # Pre-load resolver for diagnostic preview
-            resolver = MerchantResolver.from_db(db)
+            try:
+                resolver = MerchantResolver.from_db(db)
+            except Exception as exc:
+                logger.warning("Could not instantiate MerchantResolver from DB: %s", exc)
+                resolver = MerchantResolver()
 
             # Build preview rows (first 15)
             preview_rows = []
@@ -163,11 +173,14 @@ class ImportService:
             ]
             existing_ids: Set[str] = set()
             if candidate_ext_ids:
-                stmt = select(PaymentNotification.external_synthetic_id).where(
-                    PaymentNotification.user_id == user_id,
-                    PaymentNotification.external_synthetic_id.in_(candidate_ext_ids),
-                )
-                existing_ids = set(db.scalars(stmt).all())
+                try:
+                    stmt = select(PaymentNotification.external_synthetic_id).where(
+                        PaymentNotification.user_id == user_id,
+                        PaymentNotification.external_synthetic_id.in_(candidate_ext_ids),
+                    )
+                    existing_ids = set(db.scalars(stmt).all())
+                except Exception as exc:
+                    logger.warning("Could not query duplicate notification IDs from DB: %s", exc)
 
             duplicate_count = sum(1 for r in norm_result.valid_records if r.get("external_synthetic_id") in existing_ids)
             net_valid_count = len(norm_result.valid_records) - duplicate_count

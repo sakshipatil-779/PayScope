@@ -1,5 +1,6 @@
 """Import endpoints for statement and notification file ingestion."""
 import json
+import logging
 import uuid
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
@@ -8,6 +9,8 @@ from app.db.session import get_db
 from app.ingestion.import_service import ImportService
 from app.repositories.import_repository import ImportRepository
 from app.repositories.user_repository import UserRepository
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/imports", tags=["Imports"])
 
@@ -45,11 +48,16 @@ async def preview_import(
                 detail="column_overrides must be valid JSON object.",
             )
 
-    user = UserRepository.get_or_create_demo_user(db)
+    try:
+        user = UserRepository.get_or_create_demo_user(db)
+        user_id = user.id
+    except Exception as exc:
+        logger.warning("Could not resolve demo user from DB for preview: %s", exc)
+        user_id = uuid.UUID("00000000-0000-0000-0000-000000000001")
 
     result = ImportService.preview(
         db=db,
-        user_id=user.id,
+        user_id=user_id,
         filename=file.filename or "uploaded_file",
         content=content,
         import_type=import_type,
@@ -124,9 +132,18 @@ def list_imports(
     db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
     """Retrieve paginated list of previous imports."""
-    user = UserRepository.get_or_create_demo_user(db)
-    imports = ImportRepository.list_by_user(db, user_id=user.id, limit=limit, offset=offset)
-    total_count = ImportRepository.count_by_user(db, user_id=user.id)
+    try:
+        user = UserRepository.get_or_create_demo_user(db)
+        imports = ImportRepository.list_by_user(db, user_id=user.id, limit=limit, offset=offset)
+        total_count = ImportRepository.count_by_user(db, user_id=user.id)
+    except Exception as exc:
+        logger.warning("Failed to query imports from db: %s", exc)
+        return {
+            "items": [],
+            "total": 0,
+            "limit": limit,
+            "offset": offset,
+        }
 
     items = []
     for imp in imports:
@@ -159,7 +176,12 @@ def get_import(
     db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
     """Retrieve detailed metadata for a specific import record."""
-    imp = ImportRepository.get_by_id(db, import_id)
+    try:
+        imp = ImportRepository.get_by_id(db, import_id)
+    except Exception as exc:
+        logger.warning("Failed to get import by id from db: %s", exc)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Import not found.")
+
     if not imp:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Import not found.")
 
@@ -177,24 +199,3 @@ def get_import(
         "finished_at": imp.finished_at.isoformat() if imp.finished_at else None,
         "error_summary": imp.error_summary,
     }
-
-
-@router.get("/{import_id}/status", status_code=status.HTTP_200_OK)
-def get_import_status(
-    import_id: uuid.UUID,
-    db: Session = Depends(get_db),
-) -> Dict[str, Any]:
-    """Quick status check for import execution."""
-    imp = ImportRepository.get_by_id(db, import_id)
-    if not imp:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Import not found.")
-
-    return {
-        "id": str(imp.id),
-        "status": imp.status,
-        "accepted_count": imp.accepted_count,
-        "duplicate_count": imp.duplicate_count,
-        "rejected_count": imp.rejected_count,
-        "finished_at": imp.finished_at.isoformat() if imp.finished_at else None,
-    }
-

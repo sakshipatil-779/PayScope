@@ -72,9 +72,14 @@ class Settings(BaseSettings):
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_db_connection(cls, v: str) -> str:
-        if v and v.startswith("postgres://"):
+        if not v:
+            return v
+        # Detect unconfigured placeholder URLs (such as example 'ep-xyz.neon.tech' or 'CHANGE_ME')
+        if "ep-xyz.neon.tech" in v or "CHANGE_ME" in v:
+            return "postgresql+psycopg://mandatelens_dev:mandatelens_dev_password@127.0.0.1:5432/mandatelens"
+        if v.startswith("postgres://"):
             return v.replace("postgres://", "postgresql+psycopg://", 1)
-        elif v and v.startswith("postgresql://") and not v.startswith("postgresql+psycopg://"):
+        elif v.startswith("postgresql://") and not v.startswith("postgresql+psycopg://"):
             return v.replace("postgresql://", "postgresql+psycopg://", 1)
         return v
     

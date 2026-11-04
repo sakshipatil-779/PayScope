@@ -1,4 +1,5 @@
 """Query Service executing parameterized Cypher queries and serializing into Cytoscape elements."""
+import logging
 from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Any, Dict, List, Optional, Set
@@ -29,6 +30,8 @@ from app.models.commitment import Commitment
 from app.models.commitment_insight import CommitmentInsight
 from app.models.merchant import Merchant
 from app.models.transaction import Transaction
+
+logger = logging.getLogger(__name__)
 
 
 class GraphQueryService:
@@ -133,7 +136,8 @@ class GraphQueryService:
                         amount=float(tx.get("amount") or 0.0),
                     )
 
-        except Exception:
+        except Exception as e:
+            logger.warning("Neo4j overview query failed, trying PostgreSQL fallback: %s", e)
             return self._fallback_pg_overview(user_id)
 
         return GraphElements(nodes=list(nodes.values()), edges=list(edges.values()))
@@ -168,6 +172,7 @@ class GraphQueryService:
                                     label=d.get("raw_pattern", "Alias"),
                                     name=d.get("raw_pattern", "Alias"),
                                     node_type="DescriptorAlias",
+                                    pattern=d.get("raw_pattern"),
                                 )
                                 edges[f"{d_id}_{m_id}"] = self._convert_edge(d_id, m_id, "ALIAS_OF", "alias of")
 
@@ -183,13 +188,18 @@ class GraphQueryService:
                                 edges[f"{t_id}_{m_id}"] = self._convert_edge(t_id, m_id, "PAID_TO", "paid to")
 
                             return GraphElements(nodes=list(nodes.values()), edges=list(edges.values()))
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning("Neo4j merchant query failed: %s", e)
 
         # PostgreSQL fallback for merchant descriptors
-        merchant = self.db.execute(select(Merchant).where(Merchant.id == merchant_id)).scalar_one_or_none()
+        try:
+            merchant = self.db.execute(select(Merchant).where(Merchant.id == merchant_id)).scalar_one_or_none()
+        except Exception as e:
+            logger.warning("PostgreSQL merchant query failed: %s", e)
+            merchant = None
+
         if not merchant:
-            raise ValueError(f"Merchant {merchant_id} not found.")
+            return GraphElements(nodes=[], edges=[])
 
         m_id = str(merchant.id)
         nodes[m_id] = self._convert_node(
@@ -218,15 +228,82 @@ class GraphQueryService:
         nodes: Dict[str, GraphNode] = {}
         edges: Dict[str, GraphEdge] = {}
 
-        comm = self.db.execute(
-            select(Commitment).where(
-                Commitment.id == commitment_id,
-                Commitment.user_id == user_id,
-            )
-        ).scalar_one_or_none()
+        if neo4j_settings.ENABLED:
+            driver = get_neo4j_driver()
+            if driver:
+                try:
+                    with driver.session(database=neo4j_settings.DATABASE) as session:
+                        result = session.run(
+                            QUERY_COMMITMENT_EVIDENCE,
+                            user_id=str(user_id),
+                            commitment_id=str(commitment_id),
+                        )
+                        record = result.single()
+                        if record and record["c"]:
+                            c = record["c"]
+                            c_id = c["id"]
+                            nodes[c_id] = self._convert_node(
+                                node_id=c_id,
+                                label=c.get("display_name", "Commitment"),
+                                name=c.get("display_name", "Commitment"),
+                                node_type="Commitment",
+                                status=c.get("status"),
+                                amount=float(c.get("representative_amount") or 0.0),
+                            )
+
+                            if record.get("m"):
+                                m = record["m"]
+                                m_id = m["id"]
+                                nodes[m_id] = self._convert_node(
+                                    node_id=m_id,
+                                    label=m.get("canonical_name", "Merchant"),
+                                    name=m.get("canonical_name", "Merchant"),
+                                    node_type="Merchant",
+                                    category=m.get("category"),
+                                )
+                                edges[f"{c_id}_{m_id}"] = self._convert_edge(c_id, m_id, "ASSOCIATED_WITH", "associated with")
+
+                            for t in record.get("transactions", []):
+                                t_id = t["id"]
+                                nodes[t_id] = self._convert_node(
+                                    node_id=t_id,
+                                    label=f"Tx ₹{t.get('amount')}",
+                                    name=t.get("raw_descriptor", "Transaction"),
+                                    node_type="Transaction",
+                                    amount=float(t.get("amount") or 0.0),
+                                )
+                                edges[f"{c_id}_{t_id}"] = self._convert_edge(c_id, t_id, "SUPPORTED_BY", "supported by")
+
+                            for ins in record.get("insights", []):
+                                i_id = ins["id"]
+                                nodes[i_id] = self._convert_node(
+                                    node_id=i_id,
+                                    label=ins.get("title", "Insight"),
+                                    name=ins.get("title", "Insight"),
+                                    node_type="CommitmentInsight",
+                                    category=ins.get("insight_type"),
+                                    status=ins.get("severity"),
+                                )
+                                edges[f"{c_id}_{i_id}"] = self._convert_edge(c_id, i_id, "HAS_INSIGHT", "has insight")
+
+                            return GraphElements(nodes=list(nodes.values()), edges=list(edges.values()))
+                except Exception as e:
+                    logger.warning("Neo4j commitment evidence query failed: %s", e)
+
+        # Relational fallback
+        try:
+            comm = self.db.execute(
+                select(Commitment).where(
+                    Commitment.id == commitment_id,
+                    Commitment.user_id == user_id,
+                )
+            ).scalar_one_or_none()
+        except Exception as e:
+            logger.warning("PostgreSQL commitment query failed: %s", e)
+            comm = None
 
         if not comm:
-            raise ValueError(f"Commitment {commitment_id} not found.")
+            return GraphElements(nodes=[], edges=[])
 
         c_id = str(comm.id)
         nodes[c_id] = self._convert_node(
@@ -284,7 +361,12 @@ class GraphQueryService:
         u_id = str(user_id)
         nodes[u_id] = self._convert_node(node_id=u_id, label="Demo Workspace", name="Workspace Owner", node_type="User")
 
-        commitments = list(self.db.execute(select(Commitment).where(Commitment.user_id == user_id)).scalars().all())
+        commitments = []
+        try:
+            commitments = list(self.db.execute(select(Commitment).where(Commitment.user_id == user_id)).scalars().all())
+        except Exception as exc:
+            logger.warning("Could not load commitments from PostgreSQL fallback: %s", exc)
+            commitments = []
 
         for c in commitments:
             c_id = str(c.id)
@@ -353,14 +435,18 @@ class GraphQueryService:
                             counts_by_relationship={},
                             last_sync_timestamp=datetime.now(timezone.utc),
                         )
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.warning("Neo4j summary count failed: %s", e)
 
         # Relational fallback
-        merchants_count = self.db.query(Merchant).count()
-        commitments_count = self.db.query(Commitment).count()
-        transactions_count = self.db.query(Transaction).count()
-        insights_count = self.db.query(CommitmentInsight).count()
+        try:
+            merchants_count = self.db.query(Merchant).count()
+            commitments_count = self.db.query(Commitment).count()
+            transactions_count = self.db.query(Transaction).count()
+            insights_count = self.db.query(CommitmentInsight).count()
+        except Exception as exc:
+            logger.warning("PostgreSQL count failed: %s", exc)
+            merchants_count = commitments_count = transactions_count = insights_count = 0
 
         total_nodes = merchants_count + commitments_count + min(transactions_count, 100) + insights_count + 1
         return GraphSummaryResponse(

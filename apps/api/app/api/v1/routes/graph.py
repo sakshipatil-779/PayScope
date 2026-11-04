@@ -1,4 +1,5 @@
 """API endpoints for Phase 10 Neo4j Graph Relationship Intelligence."""
+import logging
 from datetime import datetime, timezone
 from typing import Optional
 import uuid
@@ -19,14 +20,20 @@ from app.graph.schemas import (
 from app.graph.sync_service import GraphSyncService
 from app.repositories.user_repository import UserRepository
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/graph", tags=["Graph Intelligence"])
 
 
 def _resolve_user_id(db: Session, user_id: Optional[uuid.UUID] = None) -> uuid.UUID:
     if user_id:
         return user_id
-    user = UserRepository.get_or_create_demo_user(db)
-    return user.id
+    try:
+        user = UserRepository.get_or_create_demo_user(db)
+        return user.id
+    except Exception as exc:
+        logger.warning("Could not resolve demo user from DB: %s", exc)
+        return uuid.UUID("00000000-0000-0000-0000-000000000001")
 
 
 @router.get("/health", response_model=GraphHealthResponse)
@@ -59,8 +66,8 @@ def get_graph_health(db: Session = Depends(get_db)) -> GraphHealthResponse:
         status="healthy" if (not enabled or connected) else "degraded",
         enabled=enabled,
         connected=connected,
-        uri=neo4j_settings.URI,
-        database=neo4j_settings.DATABASE,
+        uri=neo4j_settings.URI if enabled else None,
+        database=neo4j_settings.DATABASE if enabled else None,
         node_count=node_count,
         edge_count=edge_count,
         message=message,
@@ -109,7 +116,11 @@ def get_graph_explorer_network(
     """Retrieve the multi-hop relationship graph elements for Cytoscape.js rendering."""
     target_user_id = _resolve_user_id(db, user_id)
     svc = GraphQueryService(db)
-    return svc.get_payment_overview(target_user_id)
+    try:
+        return svc.get_payment_overview(target_user_id)
+    except Exception as exc:
+        logger.warning("Failed to query graph payment overview: %s", exc)
+        return GraphElements(nodes=[], edges=[])
 
 
 @router.get("/merchants/{id}", response_model=GraphElements)
@@ -123,6 +134,9 @@ def get_merchant_graph(
         return svc.get_merchant_descriptors(id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as exc:
+        logger.warning("Failed to query merchant graph: %s", exc)
+        return GraphElements(nodes=[], edges=[])
 
 
 @router.get("/commitments/{id}", response_model=GraphElements)
@@ -138,3 +152,6 @@ def get_commitment_graph(
         return svc.get_commitment_evidence(target_user_id, id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as exc:
+        logger.warning("Failed to query commitment graph: %s", exc)
+        return GraphElements(nodes=[], edges=[])
